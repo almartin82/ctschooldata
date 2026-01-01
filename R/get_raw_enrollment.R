@@ -253,7 +253,7 @@ fetch_education_directory <- function() {
 
     # Standardize column names
     if ("organization_code" %in% names(df)) {
-      df <- df %>%
+      df <- df |>
         dplyr::rename(
           org_code = organization_code,
           org_type = organization_type,

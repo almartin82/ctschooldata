@@ -34,7 +34,7 @@
 #' enr_fresh <- fetch_enr(2024, use_cache = FALSE)
 #'
 #' # Filter to Hartford Public Schools
-#' hartford <- enr_2024 %>%
+#' hartford <- enr_2024 |>
 #'   dplyr::filter(grepl("Hartford", district_name))
 #' }
 fetch_enr <- function(end_year, tidy = TRUE, use_cache = TRUE) {
@@ -73,7 +73,7 @@ fetch_enr <- function(end_year, tidy = TRUE, use_cache = TRUE) {
 
   # Optionally tidy
   if (tidy) {
-    processed <- tidy_enr(processed) %>%
+    processed <- tidy_enr(processed) |>
       id_enr_aggs()
   }
 
@@ -101,8 +101,8 @@ fetch_enr <- function(end_year, tidy = TRUE, use_cache = TRUE) {
 #' enr_multi <- fetch_enr_multi(2022:2024)
 #'
 #' # Track enrollment trends
-#' enr_multi %>%
-#'   dplyr::filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+#' enr_multi |>
+#'   dplyr::filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") |>
 #'   dplyr::select(end_year, n_students)
 #' }
 fetch_enr_multi <- function(end_years, tidy = TRUE, use_cache = TRUE) {
@@ -178,7 +178,7 @@ import_local_enr <- function(file_path, end_year, tidy = TRUE, save_to_cache = T
 
   # Optionally tidy
   if (tidy) {
-    processed <- tidy_enr(processed) %>%
+    processed <- tidy_enr(processed) |>
       id_enr_aggs()
   }
 
@@ -232,7 +232,7 @@ process_local_enrollment <- function(df, end_year) {
   }
 
   # Identify organization type
-  df <- df %>%
+  df <- df |>
     dplyr::mutate(
       type = dplyr::case_when(
         !is.na(campus_name) & campus_name != "" ~ "Campus",

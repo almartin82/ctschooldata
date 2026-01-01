@@ -53,7 +53,7 @@ process_ctdata_enrollment <- function(df, end_year) {
   names(df) <- gsub(" ", "_", names(df))
 
   # Create standardized output
-  result <- df %>%
+  result <- df |>
     dplyr::mutate(
       end_year = end_year,
       type = dplyr::case_when(
@@ -93,7 +93,7 @@ process_org_directory <- function(df, end_year) {
   }
 
   # Standardize and process
-  result <- df %>%
+  result <- df |>
     dplyr::mutate(
       end_year = end_year,
       type = dplyr::case_when(
@@ -120,7 +120,7 @@ process_org_directory <- function(df, end_year) {
     )
 
   # Select and order columns
-  result %>%
+  result |>
     dplyr::select(
       end_year, type,
       district_id, campus_id,
