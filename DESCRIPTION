@@ -27,5 +27,5 @@ Suggests:
     ggplot2,
     scales
 Config/testthat/edition: 3
-URL: https://github.com/almartin82/ctschooldata
+URL: https://almartin82.github.io/ctschooldata, https://github.com/almartin82/ctschooldata
 BugReports: https://github.com/almartin82/ctschooldata/issues
