@@ -62,6 +62,7 @@ Data is sourced from the Connecticut State Department of Education:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://almartin82.github.io/ctschooldata}
   \item \url{https://github.com/almartin82/ctschooldata}
   \item Report bugs at \url{https://github.com/almartin82/ctschooldata/issues}
 }

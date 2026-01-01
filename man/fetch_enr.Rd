@@ -37,7 +37,7 @@ enr_wide <- fetch_enr(2024, tidy = FALSE)
 enr_fresh <- fetch_enr(2024, use_cache = FALSE)
 
 # Filter to Hartford Public Schools
-hartford <- enr_2024 \%>\%
+hartford <- enr_2024 |>
   dplyr::filter(grepl("Hartford", district_name))
 }
 }
