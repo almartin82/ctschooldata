@@ -2,10 +2,11 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/almartin82/ctschooldata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/almartin82/ctschooldata/actions/workflows/R-CMD-check.yaml)
+[![Python Tests](https://github.com/almartin82/ctschooldata/actions/workflows/python-test.yaml/badge.svg)](https://github.com/almartin82/ctschooldata/actions/workflows/python-test.yaml)
 [![pkgdown](https://github.com/almartin82/ctschooldata/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/almartin82/ctschooldata/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
-Fetch and analyze Connecticut public school enrollment data from the Connecticut State Department of Education (CSDE).
+Fetch and analyze Connecticut school enrollment data from the Connecticut State Department of Education (CSDE) in R or Python.
 
 **[Documentation](https://almartin82.github.io/ctschooldata/)** | **[Getting Started](https://almartin82.github.io/ctschooldata/articles/quickstart.html)**
 
@@ -187,7 +188,9 @@ See the [full vignette](https://almartin82.github.io/ctschooldata/articles/enrol
 remotes::install_github("almartin82/ctschooldata")
 ```
 
-## Quick start
+## Quick Start
+
+### R
 
 ```r
 library(ctschooldata)
@@ -213,6 +216,28 @@ enr_2025 %>%
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("white", "hispanic", "black", "asian")) %>%
   select(subgroup, n_students, pct)
+```
+
+### Python
+
+```python
+import pyctschooldata as ct
+
+# Fetch 2025 data (2024-25 school year)
+enr = ct.fetch_enr(2025)
+
+# Statewide total
+total = enr[(enr['is_state']) & (enr['subgroup'] == 'total_enrollment') & (enr['grade_level'] == 'TOTAL')]['n_students'].sum()
+print(f"{total:,} students")
+#> ~500,000 students
+
+# Get multiple years
+enr_multi = ct.fetch_enr_multi([2020, 2021, 2022, 2023, 2024, 2025])
+
+# Check available years
+years = ct.get_available_years()
+print(f"Data available: {years['min_year']}-{years['max_year']}")
+#> Data available: 2007-2025
 ```
 
 ## Data availability
