@@ -22,7 +22,8 @@ Suggests:
     testthat (>= 3.0.0),
     readxl,
     ggplot2,
-    scales
+    scales,
+    tidyr
 Config/testthat/edition: 3
 URL: https://almartin82.github.io/ctschooldata, https://github.com/almartin82/ctschooldata
 BugReports: https://github.com/almartin82/ctschooldata/issues
