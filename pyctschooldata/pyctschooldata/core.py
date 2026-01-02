@@ -139,11 +139,16 @@ def get_available_years() -> dict:
         # Try names attribute (NamedList or similar)
         if hasattr(r_result, "names") and callable(getattr(r_result, "names", None)):
             names = list(r_result.names())
-            values = list(r_result)
-            result_dict = dict(zip(names, values))
+            result = {}
+            for i, name in enumerate(names):
+                val = r_result[i]
+                # Handle numpy arrays from rpy2 conversion
+                if hasattr(val, "__getitem__"):
+                    val = val[0]
+                result[name] = int(val)
             return {
-                "min_year": int(result_dict["min_year"]),
-                "max_year": int(result_dict["max_year"]),
+                "min_year": result["min_year"],
+                "max_year": result["max_year"],
             }
         # Fallback: try direct attribute access
         return {
