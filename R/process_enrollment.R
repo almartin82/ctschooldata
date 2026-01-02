@@ -80,6 +80,10 @@ process_ctdata_enrollment <- function(df, end_year) {
     result <- dplyr::rename(result, district_name = district)
   }
 
+  if ("school_name" %in% names(result)) {
+    result <- dplyr::rename(result, campus_name = school_name)
+  }
+
   if ("value" %in% names(result)) {
     result <- dplyr::rename(result, n_students = value)
     result$n_students <- safe_numeric(result$n_students)
