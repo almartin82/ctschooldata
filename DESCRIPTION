@@ -23,7 +23,11 @@ Suggests:
     readxl,
     ggplot2,
     scales,
-    tidyr
+    tidyr,
+    knitr,
+    rmarkdown,
+    forcats
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://almartin82.github.io/ctschooldata, https://github.com/almartin82/ctschooldata
 BugReports: https://github.com/almartin82/ctschooldata/issues

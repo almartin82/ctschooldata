@@ -52,13 +52,25 @@ process_ctdata_enrollment <- function(df, end_year) {
   names(df) <- tolower(names(df))
   names(df) <- gsub(" ", "_", names(df))
 
+  # Check which columns exist
+  has_school_name <- "school_name" %in% names(df)
+  has_district <- "district" %in% names(df)
+
+  # Add placeholder columns if missing (to avoid case_when errors)
+  if (!has_school_name) {
+    df$school_name <- NA_character_
+  }
+  if (!has_district) {
+    df$district <- NA_character_
+  }
+
   # Create standardized output
   result <- df |>
     dplyr::mutate(
       end_year = end_year,
       type = dplyr::case_when(
-        grepl("state", tolower(district), fixed = TRUE) ~ "State",
-        is.na(school_name) | school_name == "" ~ "District",
+        grepl("state", tolower(.data$district), fixed = TRUE) ~ "State",
+        is.na(.data$school_name) | .data$school_name == "" ~ "District",
         TRUE ~ "Campus"
       )
     )
