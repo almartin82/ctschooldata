@@ -169,6 +169,16 @@ tidy_enr <- function(df) {
 #' }
 id_enr_aggs <- function(df) {
   has_org_type <- "org_type" %in% names(df)
+  has_campus_name <- "campus_name" %in% names(df)
+
+  # Add placeholder columns if missing
+  if (!has_campus_name) {
+    df$campus_name <- NA_character_
+  }
+  if (!has_org_type) {
+    df$org_type <- NA_character_
+  }
+
   df |>
     dplyr::mutate(
       # State level: Type == "State"
@@ -182,8 +192,8 @@ id_enr_aggs <- function(df) {
 
       # Charter detection - look for charter in org_type or name
       is_charter = dplyr::case_when(
-        has_org_type & grepl("charter", tolower(org_type)) ~ TRUE,
-        grepl("charter", tolower(campus_name)) ~ TRUE,
+        !is.na(org_type) & grepl("charter", tolower(org_type)) ~ TRUE,
+        !is.na(campus_name) & grepl("charter", tolower(campus_name)) ~ TRUE,
         TRUE ~ FALSE
       )
     )
