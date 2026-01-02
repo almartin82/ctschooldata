@@ -52,18 +52,24 @@ tidy_enr <- function(df) {
 
   # Transform demographic/special subgroups to long format
   if (length(all_subgroups) > 0) {
+    has_row_total <- "row_total" %in% names(df)
     tidy_subgroups <- purrr::map_df(
       all_subgroups,
       function(.x) {
-        df |>
+        result <- df |>
           dplyr::rename(n_students = dplyr::all_of(.x)) |>
           dplyr::select(dplyr::all_of(c(invariants, "n_students")),
                         dplyr::any_of("row_total")) |>
           dplyr::mutate(
             subgroup = .x,
-            pct = if ("row_total" %in% names(.)) n_students / row_total else NA_real_,
             grade_level = "TOTAL"
-          ) |>
+          )
+        if (has_row_total) {
+          result <- result |> dplyr::mutate(pct = n_students / row_total)
+        } else {
+          result <- result |> dplyr::mutate(pct = NA_real_)
+        }
+        result |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))
       }
     )
@@ -114,21 +120,27 @@ tidy_enr <- function(df) {
       "grade_12" = "12"
     )
 
+    has_row_total_grades <- "row_total" %in% names(df)
     tidy_grades <- purrr::map_df(
       grade_cols,
       function(.x) {
         gl <- grade_level_map[.x]
         if (is.na(gl)) gl <- .x
 
-        df |>
+        result <- df |>
           dplyr::rename(n_students = dplyr::all_of(.x)) |>
           dplyr::select(dplyr::all_of(c(invariants, "n_students")),
                         dplyr::any_of("row_total")) |>
           dplyr::mutate(
             subgroup = "total_enrollment",
-            pct = if ("row_total" %in% names(.)) n_students / row_total else NA_real_,
             grade_level = gl
-          ) |>
+          )
+        if (has_row_total_grades) {
+          result <- result |> dplyr::mutate(pct = n_students / row_total)
+        } else {
+          result <- result |> dplyr::mutate(pct = NA_real_)
+        }
+        result |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))
       }
     )
@@ -156,6 +168,7 @@ tidy_enr <- function(df) {
 #' table(tidy_data$is_state, tidy_data$is_district, tidy_data$is_campus)
 #' }
 id_enr_aggs <- function(df) {
+  has_org_type <- "org_type" %in% names(df)
   df |>
     dplyr::mutate(
       # State level: Type == "State"
@@ -169,7 +182,7 @@ id_enr_aggs <- function(df) {
 
       # Charter detection - look for charter in org_type or name
       is_charter = dplyr::case_when(
-        "org_type" %in% names(.) & grepl("charter", tolower(org_type)) ~ TRUE,
+        has_org_type & grepl("charter", tolower(org_type)) ~ TRUE,
         grepl("charter", tolower(campus_name)) ~ TRUE,
         TRUE ~ FALSE
       )
