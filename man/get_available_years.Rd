@@ -16,8 +16,8 @@ Integer vector of available school years (end year)
 \description{
 Returns the range of school years for which enrollment data is available.
 Connecticut EdSight provides enrollment data from 2007 (2006-07 school year)
-through the current year. The function dynamically detects available years
-by checking the EdSight API.
+through 2024 (2023-24 school year). The function can optionally query the
+EdSight API to verify availability.
 }
 \examples{
 get_available_years()

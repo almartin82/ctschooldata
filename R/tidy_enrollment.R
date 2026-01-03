@@ -10,6 +10,8 @@
 #' Tidy enrollment data
 #'
 #' Transforms wide enrollment data to long format with subgroup column.
+#' Also handles data that is already in a semi-tidy format (e.g., CTData.org data
+#' which has n_students and grade_level columns already).
 #'
 #' @param df A wide data.frame of processed enrollment data
 #' @return A long data.frame of tidied enrollment data
@@ -20,6 +22,64 @@
 #' tidy_data <- tidy_enr(wide_data)
 #' }
 tidy_enr <- function(df) {
+
+  # Check if data is already in tidy format (has n_students AND grade_level columns)
+  # This is the case for CTData.org data which comes pre-pivoted
+  if ("n_students" %in% names(df) && "grade_level" %in% names(df)) {
+    return(tidy_pretidied_data(df))
+  }
+
+  # Otherwise, process as wide format data
+  tidy_wide_data(df)
+}
+
+
+#' Tidy pre-tidied enrollment data
+#'
+#' Handles data that is already in a semi-tidy format (e.g., CTData.org data).
+#'
+#' @param df Data frame with n_students and grade_level columns already present
+#' @return Standardized tidy data frame
+#' @keywords internal
+tidy_pretidied_data <- function(df) {
+
+  # Invariant columns (identifiers that stay the same)
+  invariants <- c(
+    "end_year", "type",
+    "district_id", "campus_id",
+    "district_name", "campus_name",
+    "town", "org_code", "org_type"
+  )
+  invariants <- invariants[invariants %in% names(df)]
+
+  # Add subgroup column if missing (default to total_enrollment)
+  if (!"subgroup" %in% names(df)) {
+    df$subgroup <- "total_enrollment"
+  }
+
+  # Add pct column if missing
+  if (!"pct" %in% names(df)) {
+    df$pct <- NA_real_
+  }
+
+  # Select and return standardized columns
+  output_cols <- c(invariants, "grade_level", "subgroup", "n_students", "pct")
+  output_cols <- output_cols[output_cols %in% names(df)]
+
+  df |>
+    dplyr::select(dplyr::all_of(output_cols)) |>
+    dplyr::filter(!is.na(n_students))
+}
+
+
+#' Tidy wide-format enrollment data
+#'
+#' Transforms wide enrollment data to long format with subgroup column.
+#'
+#' @param df A wide data.frame with demographic columns and grade_XX columns
+#' @return A long data.frame of tidied enrollment data
+#' @keywords internal
+tidy_wide_data <- function(df) {
 
   # Invariant columns (identifiers that stay the same)
   invariants <- c(
