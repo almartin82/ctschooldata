@@ -32,8 +32,8 @@ safe_numeric <- function(x) {
 #'
 #' Returns the range of school years for which enrollment data is available.
 #' Connecticut EdSight provides enrollment data from 2007 (2006-07 school year)
-#' through the current year. The function dynamically detects available years
-#' by checking the EdSight API.
+#' through 2024 (2023-24 school year). The function can optionally query the
+#' EdSight API to verify availability.
 #'
 #' @param check_api If TRUE (default), queries the EdSight portal to detect
 #'   available years. If FALSE, returns the known historical range.
@@ -45,26 +45,15 @@ get_available_years <- function(check_api = TRUE) {
 
   # Known historical range based on research:
   # - EdSight has Condition of Education reports from 2004-05 through 2023-24
-
   # - Enrollment data appears available from 2006-07 (end year 2007) forward
-  # - 2024-25 data should be available (end year 2025)
+  # - 2023-24 data confirmed available (end year 2024)
 
   # Historical minimum year (first year with EdSight enrollment data)
   min_year <- 2007
 
-  # Calculate current academic year end
-  # If we're in fall (Aug-Dec), we're in year that ends next calendar year
-  current_date <- Sys.Date()
-  current_month <- as.integer(format(current_date, "%m"))
-  current_cal_year <- as.integer(format(current_date, "%Y"))
-
-  if (current_month >= 8) {
-    # Fall semester - academic year ends next calendar year
-    max_year <- current_cal_year + 1
-  } else {
-    # Spring semester - academic year ends this calendar year
-    max_year <- current_cal_year
-  }
+  # Maximum year with confirmed data availability
+  # Cap at 2024 (2023-24 school year) - update when newer data is confirmed
+  max_year <- 2024
 
   if (check_api) {
     # Try to detect available years from EdSight
