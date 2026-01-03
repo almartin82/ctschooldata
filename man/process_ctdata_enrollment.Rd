@@ -15,6 +15,7 @@ process_ctdata_enrollment(df, end_year)
 Processed data frame
 }
 \description{
-Process CTData.org enrollment data
+Processes enrollment data from CTData.org into standardized format.
+CTData.org provides enrollment by district with grade and demographic breakdowns.
 }
 \keyword{internal}

@@ -8,23 +8,35 @@ NULL
 
 #' Convert to numeric, handling suppression markers
 #'
-#' CSDE uses various markers for suppressed data (*, N/A, etc.)
-#' and may use commas in large numbers.
+#' CSDE and CTData.org use various markers for suppressed data:
+#' - Text markers: *, ***, ., -, N/A, NA, empty string
+#' - Numeric suppression codes: -9999, -6666, -1 (used by CTData.org)
+#' - Small count suppressions: <5, <10
 #'
 #' @param x Vector to convert
-#' @return Numeric vector with NA for non-numeric values
+#' @return Numeric vector with NA for suppressed/non-numeric values
 #' @keywords internal
 safe_numeric <- function(x) {
+  # Convert to character for consistent processing
+  x <- as.character(x)
+
   # Remove commas and whitespace
   x <- gsub(",", "", x)
   x <- trimws(x)
 
-  # Handle common suppression markers
+  # Handle common text suppression markers
   x[x %in% c("*", "***", ".", "-", "-1", "<5", "<10", "N/A", "NA", "")] <- NA_character_
   x[grepl("^\\*+$", x)] <- NA_character_
   x[grepl("^<\\d+$", x)] <- NA_character_
 
-  suppressWarnings(as.numeric(x))
+  # Convert to numeric
+  result <- suppressWarnings(as.numeric(x))
+
+ # Handle numeric suppression codes used by CTData.org
+  # -9999 and -6666 are common suppression markers for small cell sizes
+  result[!is.na(result) & result < -999] <- NA_real_
+
+  result
 }
 
 

@@ -10,10 +10,14 @@ safe_numeric(x)
 \item{x}{Vector to convert}
 }
 \value{
-Numeric vector with NA for non-numeric values
+Numeric vector with NA for suppressed/non-numeric values
 }
 \description{
-CSDE uses various markers for suppressed data (*, N/A, etc.)
-and may use commas in large numbers.
+CSDE and CTData.org use various markers for suppressed data:
+\itemize{
+\item Text markers: *, ***, ., -, N/A, NA, empty string
+\item Numeric suppression codes: -9999, -6666, -1 (used by CTData.org)
+\item Small count suppressions: <5, <10
+}
 }
 \keyword{internal}

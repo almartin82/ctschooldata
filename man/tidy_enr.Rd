@@ -14,6 +14,8 @@ A long data.frame of tidied enrollment data
 }
 \description{
 Transforms wide enrollment data to long format with subgroup column.
+Also handles data that is already in a semi-tidy format (e.g., CTData.org data
+which has n_students and grade_level columns already).
 }
 \examples{
 \dontrun{
