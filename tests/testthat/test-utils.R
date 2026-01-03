@@ -18,9 +18,9 @@ test_that("get_available_years returns valid range", {
   # Should start from 2007 (first EdSight year)
   expect_equal(min(years), 2007)
 
-  # Should extend to current or next academic year
-  current_year <- as.integer(format(Sys.Date(), "%Y"))
-  expect_true(max(years) >= current_year)
+  # Should extend to at least 2024 (last confirmed year with data)
+  # NOTE: EdSight data must be manually exported; max year is set in get_available_years()
+  expect_true(max(years) >= 2024)
 })
 
 

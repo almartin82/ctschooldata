@@ -39,6 +39,9 @@ process_enr <- function(raw_data, end_year) {
 
 #' Process CTData.org enrollment data
 #'
+#' Processes enrollment data from CTData.org into standardized format.
+#' CTData.org provides enrollment by district with grade and demographic breakdowns.
+#'
 #' @param df Raw enrollment data frame from CTData
 #' @param end_year School year end
 #' @return Processed data frame
@@ -47,6 +50,7 @@ process_ctdata_enrollment <- function(df, end_year) {
 
   # CTData enrollment data typically has columns like:
   # - District, Town, Grade, Year, Value, FIPS
+  # Note: CTData.org provides district-level data only (no school-level)
 
   # Standardize column names
   names(df) <- tolower(names(df))
@@ -56,7 +60,32 @@ process_ctdata_enrollment <- function(df, end_year) {
   has_school_name <- "school_name" %in% names(df)
   has_district <- "district" %in% names(df)
 
-  # Add placeholder columns if missing (to avoid case_when errors)
+  # Determine type based on what columns exist
+  # CTData.org data is district-level by default (no school_name column)
+  if (has_district) {
+    district_col <- df$district
+  } else {
+    district_col <- rep(NA_character_, nrow(df))
+  }
+
+  if (has_school_name) {
+    school_col <- df$school_name
+  } else {
+    school_col <- rep(NA_character_, nrow(df))
+  }
+
+  # Determine organization type
+  type_vec <- dplyr::case_when(
+    !is.na(district_col) & grepl("state|connecticut", tolower(district_col)) ~ "State",
+    is.na(school_col) | school_col == "" ~ "District",
+    TRUE ~ "Campus"
+  )
+
+  # Add type and end_year to df
+  df$type <- type_vec
+  df$end_year <- end_year
+
+  # Add placeholder columns if missing
   if (!has_school_name) {
     df$school_name <- NA_character_
   }
@@ -64,18 +93,8 @@ process_ctdata_enrollment <- function(df, end_year) {
     df$district <- NA_character_
   }
 
-  # Create standardized output
-  result <- df |>
-    dplyr::mutate(
-      end_year = end_year,
-      type = dplyr::case_when(
-        grepl("state", tolower(.data$district), fixed = TRUE) ~ "State",
-        is.na(.data$school_name) | .data$school_name == "" ~ "District",
-        TRUE ~ "Campus"
-      )
-    )
-
   # Rename columns to standard schema
+  result <- df
   if ("district" %in% names(result)) {
     result <- dplyr::rename(result, district_name = district)
   }
@@ -89,7 +108,43 @@ process_ctdata_enrollment <- function(df, end_year) {
     result$n_students <- safe_numeric(result$n_students)
   }
 
+  # Standardize grade column if present
+  if ("grade" %in% names(result)) {
+    result$grade_level <- standardize_grade(result$grade)
+  }
+
   result
+}
+
+
+#' Standardize grade level values
+#'
+#' Converts various grade representations to standard format.
+#'
+#' @param grade Character vector of grade values
+#' @return Character vector with standardized grade levels
+#' @keywords internal
+standardize_grade <- function(grade) {
+  grade <- tolower(trimws(grade))
+
+  dplyr::case_when(
+    grepl("pre.?k|pre k", grade) ~ "PK",
+    grepl("kindergarten|^k$", grade) ~ "K",
+    grade == "1" ~ "01",
+    grade == "2" ~ "02",
+    grade == "3" ~ "03",
+    grade == "4" ~ "04",
+    grade == "5" ~ "05",
+    grade == "6" ~ "06",
+    grade == "7" ~ "07",
+    grade == "8" ~ "08",
+    grade == "9" ~ "09",
+    grade == "10" ~ "10",
+    grade == "11" ~ "11",
+    grade == "12" ~ "12",
+    grepl("total", grade) ~ "TOTAL",
+    TRUE ~ toupper(grade)
+  )
 }
 
 
