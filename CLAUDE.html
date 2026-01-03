@@ -15,7 +15,8 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="articles/ctschooldata.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="articles/enrollment_hooks.html">10 Insights from Connecticut School Enrollment Data</a></li>
@@ -35,18 +36,237 @@
       <small class="dont-index">Source: <a href="https://github.com/almartin82/ctschooldata/blob/main/CLAUDE.md" class="external-link"><code>CLAUDE.md</code></a></small>
     </div>
 
-<div id="claude-code-instructions" class="section level1">
 
 <div class="section level2">
-<h2 id="git-commits-and-prs">Git Commits and PRs<a class="anchor" aria-label="anchor" href="#git-commits-and-prs"></a></h2>
-<ul><li>NEVER reference Claude, Claude Code, or AI assistance in commit messages</li>
-<li>NEVER reference Claude, Claude Code, or AI assistance in PR descriptions</li>
-<li>NEVER add Co-Authored-By lines mentioning Claude or Anthropic</li>
-<li>Keep commit messages focused on what changed, not how it was written</li>
+<h2 id="critical-data-source-rules">CRITICAL DATA SOURCE RULES<a class="anchor" aria-label="anchor" href="#critical-data-source-rules"></a></h2>
+<p><strong>NEVER use Urban Institute API, NCES CCD, or ANY federal data source</strong> — the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source — do not fall back to federal data.</p>
+<hr></div>
+<div id="claude-code-instructions" class="section level1">
+
+<div class="section level3">
+<h3 id="git-commit-policy">GIT COMMIT POLICY<a class="anchor" aria-label="anchor" href="#git-commit-policy"></a></h3>
+<ul><li>Commits are allowed</li>
+<li>NO Claude Code attribution, NO Co-Authored-By trailers, NO emojis</li>
+<li>Write normal commit messages as if a human wrote them</li>
+</ul><hr></div>
+<div class="section level2">
+<h2 id="local-testing-before-prs-required">Local Testing Before PRs (REQUIRED)<a class="anchor" aria-label="anchor" href="#local-testing-before-prs-required"></a></h2>
+<p><strong>PRs will not be merged until CI passes.</strong> Run these checks locally BEFORE opening a PR:</p>
+<div class="section level3">
+<h3 id="ci-checks-that-must-pass">CI Checks That Must Pass<a class="anchor" aria-label="anchor" href="#ci-checks-that-must-pass"></a></h3>
+<table class="table"><colgroup><col width="18%"><col width="40%"><col width="40%"></colgroup><thead><tr class="header"><th>Check</th>
+<th>Local Command</th>
+<th>What It Tests</th>
+</tr></thead><tbody><tr class="odd"><td>R-CMD-check</td>
+<td><code>devtools::check()</code></td>
+<td>Package builds, tests pass, no errors/warnings</td>
+</tr><tr class="even"><td>Python tests</td>
+<td><code>pytest tests/test_pyctschooldata.py -v</code></td>
+<td>Python wrapper works correctly</td>
+</tr><tr class="odd"><td>pkgdown</td>
+<td><code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code></td>
+<td>Documentation and vignettes render</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="quick-commands">Quick Commands<a class="anchor" aria-label="anchor" href="#quick-commands"></a></h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># R package check (required)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Python tests (required)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"pip install -e ./pyctschooldata &amp;&amp; pytest tests/test_pyctschooldata.py -v"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># pkgdown build (required)</span></span>
+<span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="pre-pr-checklist">Pre-PR Checklist<a class="anchor" aria-label="anchor" href="#pre-pr-checklist"></a></h3>
+<p>Before opening a PR, verify: - [ ] <code>devtools::check()</code> — 0 errors, 0 warnings - [ ] <code>pytest tests/test_pyctschooldata.py</code> — all tests pass - [ ] <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> — builds without errors - [ ] Vignettes render (no <code>eval=FALSE</code> hacks)</p>
+<hr></div>
+</div>
+</div>
+<div class="section level1">
+<h1 id="ctschooldata-package-documentation">ctschooldata Package Documentation<a class="anchor" aria-label="anchor" href="#ctschooldata-package-documentation"></a></h1>
+<div class="section level2">
+<h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a></h2>
+<p><code>ctschooldata</code> provides R functions for fetching Connecticut public school enrollment data from the Connecticut State Department of Education (CSDE).</p>
+<p><strong>Current Status</strong>: WORKS_MOSTLY - The package structure is complete but the automated data source provides limited data (see Known Issues below).</p>
+</div>
+<div class="section level2">
+<h2 id="data-sources">Data Sources<a class="anchor" aria-label="anchor" href="#data-sources"></a></h2>
+<div class="section level3">
+<h3 id="primary-source-edsight-requires-manual-export">Primary Source: EdSight (Requires Manual Export)<a class="anchor" aria-label="anchor" href="#primary-source-edsight-requires-manual-export"></a></h3>
+<ul><li>
+<strong>URL</strong>: <a href="https://public-edsight.ct.gov/Students/Enrollment-Dashboard" class="external-link uri">https://public-edsight.ct.gov/Students/Enrollment-Dashboard</a>
+</li>
+<li>
+<strong>Export URL</strong>: <a href="https://public-edsight.ct.gov/Students/Enrollment-Dashboard/Public-School-Enrollment-Export" class="external-link uri">https://public-edsight.ct.gov/Students/Enrollment-Dashboard/Public-School-Enrollment-Export</a>
+</li>
+<li>
+<strong>Technology</strong>: Qlik Sense (requires browser interaction)</li>
+<li>
+<strong>Data Available</strong>: 2007-2024 (end years)</li>
+<li>
+<strong>Includes</strong>: Full enrollment counts, demographics, special populations, grade levels</li>
+<li>
+<strong>Limitation</strong>: No direct API access; requires manual browser export</li>
+</ul></div>
+<div class="section level3">
+<h3 id="automated-source-ct-open-data-education-directory">Automated Source: CT Open Data Education Directory<a class="anchor" aria-label="anchor" href="#automated-source-ct-open-data-education-directory"></a></h3>
+<ul><li>
+<strong>URL</strong>: <a href="https://data.ct.gov/resource/9k2y-kqxn.json" class="external-link uri">https://data.ct.gov/resource/9k2y-kqxn.json</a>
+</li>
+<li>
+<strong>Dataset ID</strong>: 9k2y-kqxn</li>
+<li>
+<strong>Data Available</strong>: Current year only (organization list)</li>
+<li>
+<strong>Includes</strong>: District/school names, organization codes, grade-level offerings</li>
+<li>
+<strong>CRITICAL LIMITATION</strong>: Contains binary flags (0/1) for grade offerings, NOT enrollment counts</li>
+</ul></div>
+<div class="section level3">
+<h3 id="secondary-source-ctdataorg">Secondary Source: CTData.org<a class="anchor" aria-label="anchor" href="#secondary-source-ctdataorg"></a></h3>
+<ul><li>
+<strong>URL</strong>: <a href="http://data.ctdata.org/dataset/student-enrollment-by-grade" class="external-link uri">http://data.ctdata.org/dataset/student-enrollment-by-grade</a>
+</li>
+<li>
+<strong>Data Available</strong>: 2007-2021 (limited coverage, only ~4 charter districts)</li>
+<li>
+<strong>Not comprehensive</strong>: Does not include all CT districts</li>
 </ul></div>
 </div>
+<div class="section level2">
+<h2 id="available-years">Available Years<a class="anchor" aria-label="anchor" href="#available-years"></a></h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Returns 2007:2024</span></span></code></pre></div>
+<ul><li>
+<strong>2007-2024</strong>: Available via EdSight (manual export required)</li>
+<li>
+<strong>2025+</strong>: Data may exist but not yet confirmed</li>
+</ul></div>
+<div class="section level2">
+<h2 id="available-subgroups">Available Subgroups<a class="anchor" aria-label="anchor" href="#available-subgroups"></a></h2>
+<p>When using EdSight data (manual export), these subgroups are available: - <strong>Demographics</strong>: white, black, hispanic, asian, american_indian, pacific_islander, two_or_more - <strong>Special Populations</strong>: lep (ELL), econ_disadv, special_ed - <strong>Grade Levels</strong>: PK, K, 01-12, TOTAL</p>
+<p><strong>Current automated data only provides</strong>: total_enrollment (as binary grade flags)</p>
+</div>
+<div class="section level2">
+<h2 id="known-issues">Known Issues<a class="anchor" aria-label="anchor" href="#known-issues"></a></h2>
+<div class="section level3">
+<h3 id="critical-automated-data-source-provides-binary-flags-not-counts">CRITICAL: Automated Data Source Provides Binary Flags, Not Counts<a class="anchor" aria-label="anchor" href="#critical-automated-data-source-provides-binary-flags-not-counts"></a></h3>
+<p>The Education Directory API (<code>9k2y-kqxn</code>) that the package can access automatically contains: - <strong>Binary flags (0 or 1)</strong> indicating whether a school offers a grade - <strong>NOT actual enrollment counts</strong></p>
+<p>When you see n_students values of 0 or 1, this indicates the package is using the Education Directory source.</p>
+</div>
+<div class="section level3">
+<h3 id="no-state-level-aggregates">No State-Level Aggregates<a class="anchor" aria-label="anchor" href="#no-state-level-aggregates"></a></h3>
+<p>The automated data source does not include a state-level aggregate row. <code>is_state</code> will always be FALSE.</p>
+</div>
+<div class="section level3">
+<h3 id="no-demographic-subgroups">No Demographic Subgroups<a class="anchor" aria-label="anchor" href="#no-demographic-subgroups"></a></h3>
+<p>The automated data source only includes <code>total_enrollment</code> subgroup (which is actually grade-offering flags). Race/ethnicity and special population data requires EdSight export.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="data-fidelity-requirement">Data Fidelity Requirement<a class="anchor" aria-label="anchor" href="#data-fidelity-requirement"></a></h2>
+<p><strong>CRITICAL</strong>: The tidy=TRUE version MUST maintain fidelity to the raw, unprocessed source file. Every test should verify actual values from the raw data appear correctly in the tidied output.</p>
+<p>When implementing fixes or improvements: 1. Always compare tidied output against raw source 2. Preserve exact district/school names from source 3. Preserve organization codes exactly as provided 4. Document any transformations applied to enrollment counts</p>
+</div>
+<div class="section level2">
+<h2 id="fixing-the-data-source">Fixing the Data Source<a class="anchor" aria-label="anchor" href="#fixing-the-data-source"></a></h2>
+<p>To get real enrollment data into this package, implement one of these approaches:</p>
+<div class="section level3">
+<h3 id="option-1-manual-import-current-workaround">Option 1: Manual Import (Current Workaround)<a class="anchor" aria-label="anchor" href="#option-1-manual-import-current-workaround"></a></h3>
+<ol style="list-style-type: decimal"><li>Visit <a href="https://public-edsight.ct.gov/Students/Enrollment-Dashboard/Public-School-Enrollment-Export" class="external-link uri">https://public-edsight.ct.gov/Students/Enrollment-Dashboard/Public-School-Enrollment-Export</a>
+</li>
+<li>Export data for desired years</li>
+<li>Use <code><a href="reference/import_local_enr.html">import_local_enr()</a></code> to import the downloaded file</li>
+</ol><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example usage</span></span>
+<span><span class="va">enr_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/import_local_enr.html">import_local_enr</a></span><span class="op">(</span><span class="st">"~/Downloads/CT_Enrollment_2023-24.xlsx"</span>, end_year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="option-2-browser-automation">Option 2: Browser Automation<a class="anchor" aria-label="anchor" href="#option-2-browser-automation"></a></h3>
+<p>Implement Playwright/Selenium automation to: 1. Navigate to EdSight enrollment export 2. Select filters (year, format) 3. Trigger export and capture downloaded file 4. Process the downloaded data</p>
+</div>
+<div class="section level3">
+<h3 id="option-3-find-alternative-api">Option 3: Find Alternative API<a class="anchor" aria-label="anchor" href="#option-3-find-alternative-api"></a></h3>
+<p>Research if: - EdSight has an undocumented API endpoint - CT Open Data portal has additional enrollment datasets - CTData.org has more comprehensive data</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="file-structure">File Structure<a class="anchor" aria-label="anchor" href="#file-structure"></a></h2>
+<pre><code><span><span class="va">ctschooldata</span><span class="op">/</span></span>
+<span>  <span class="va">R</span><span class="op">/</span></span>
+<span>    <span class="va">fetch_enrollment.R</span>   <span class="co"># Main fetch functions (fetch_enr, fetch_enr_multi)</span></span>
+<span>    <span class="va">get_raw_enrollment.R</span> <span class="co"># Raw data download functions</span></span>
+<span>    <span class="va">process_enrollment.R</span> <span class="co"># Data processing and standardization</span></span>
+<span>    <span class="va">tidy_enrollment.R</span>    <span class="co"># Wide-to-long transformation</span></span>
+<span>    <span class="va">cache.R</span>              <span class="co"># Local caching functions</span></span>
+<span>    <span class="va">utils.R</span>              <span class="co"># Helper utilities</span></span>
+<span>  <span class="va">tests</span><span class="op">/</span></span>
+<span>    <span class="va">testthat</span><span class="op">/</span></span>
+<span>      <span class="va">test</span><span class="op">-</span><span class="va">enrollment</span><span class="op">-</span><span class="va">data.R</span>  <span class="co"># Comprehensive data tests (documents known issues)</span></span>
+<span>      <span class="va">test</span><span class="op">-</span><span class="va">fetch.R</span>            <span class="co"># Function interface tests</span></span>
+<span>      <span class="va">test</span><span class="op">-</span><span class="va">utils.R</span>            <span class="co"># Utility function tests</span></span>
+<span>      <span class="va">test</span><span class="op">-</span><span class="va">cache.R</span>            <span class="co"># Cache function tests</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="key-functions">Key Functions<a class="anchor" aria-label="anchor" href="#key-functions"></a></h2>
+<table class="table"><colgroup><col width="38%"><col width="34%"><col width="26%"></colgroup><thead><tr class="header"><th>Function</th>
+<th>Purpose</th>
+<th>Notes</th>
+</tr></thead><tbody><tr class="odd"><td><code>fetch_enr(end_year)</code></td>
+<td>Fetch enrollment for one year</td>
+<td>Returns binary flags without EdSight data</td>
+</tr><tr class="even"><td><code>fetch_enr_multi(years)</code></td>
+<td>Fetch multiple years</td>
+<td>Combines results</td>
+</tr><tr class="odd"><td><code>import_local_enr(path, year)</code></td>
+<td>Import local file</td>
+<td>Use for EdSight exports</td>
+</tr><tr class="even"><td><code><a href="reference/get_available_years.html">get_available_years()</a></code></td>
+<td>Get year range</td>
+<td>Returns 2007:2024</td>
+</tr><tr class="odd"><td><code>tidy_enr(df)</code></td>
+<td>Wide to long format</td>
+<td>Transforms subgroups</td>
+</tr><tr class="even"><td><code><a href="reference/clear_cache.html">clear_cache()</a></code></td>
+<td>Clear cached data</td>
+<td>Useful for re-downloading</td>
+</tr></tbody></table></div>
+<div class="section level2">
+<h2 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a></h2>
+<p>Run tests with:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Current tests document known issues with message output explaining limitations.</p>
+<hr></div>
+<div class="section level2">
+<h2 id="live-pipeline-testing">LIVE Pipeline Testing<a class="anchor" aria-label="anchor" href="#live-pipeline-testing"></a></h2>
+<p>This package includes <code>tests/testthat/test-pipeline-live.R</code> with LIVE network tests.</p>
+<div class="section level3">
+<h3 id="test-categories">Test Categories:<a class="anchor" aria-label="anchor" href="#test-categories"></a></h3>
+<ol style="list-style-type: decimal"><li>URL Availability - HTTP 200 checks</li>
+<li>File Download - Verify actual file (not HTML error)</li>
+<li>File Parsing - readxl/readr succeeds</li>
+<li>Column Structure - Expected columns exist</li>
+<li>get_raw_enr() - Raw data function works</li>
+<li>Data Quality - No Inf/NaN, non-negative counts</li>
+<li>Aggregation - State total &gt; 0</li>
+<li>Output Fidelity - tidy=TRUE matches raw</li>
+</ol></div>
+<div class="section level3">
+<h3 id="running-tests">Running Tests:<a class="anchor" aria-label="anchor" href="#running-tests"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span>filter <span class="op">=</span> <span class="st">"pipeline-live"</span><span class="op">)</span></span></code></pre></div>
+<p>See <code>state-schooldata/CLAUDE.md</code> for complete testing framework documentation.</p>
+</div>
+</div>
+</div>
 
-  </main></div>
+
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

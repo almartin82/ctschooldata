@@ -3,6 +3,8 @@
 <url><loc>https://almartin82.github.io/ctschooldata/CLAUDE.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/LICENSE-text.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/LICENSE.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/TODO.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/articles/ctschooldata.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/articles/enrollment_hooks.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/articles/index.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/authors.html</loc></url>
@@ -35,8 +37,11 @@
 <url><loc>https://almartin82.github.io/ctschooldata/reference/process_org_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/read_cache.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/safe_numeric.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/standardize_grade.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/standardize_org_code.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/tidy_enr.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/tidy_pretidied_data.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/tidy_wide_data.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/try_ct_open_data.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/try_ctdata_org.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/write_cache.html</loc></url>

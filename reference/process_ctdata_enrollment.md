@@ -1,6 +1,8 @@
 # Process CTData.org enrollment data
 
-Process CTData.org enrollment data
+Processes enrollment data from CTData.org into standardized format.
+CTData.org provides enrollment by district with grade and demographic
+breakdowns.
 
 ## Usage
 

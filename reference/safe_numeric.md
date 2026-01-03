@@ -1,7 +1,12 @@
 # Convert to numeric, handling suppression markers
 
-CSDE uses various markers for suppressed data (\*, N/A, etc.) and may
-use commas in large numbers.
+CSDE and CTData.org use various markers for suppressed data:
+
+- Text markers: \*, \*\*\*, ., -, N/A, NA, empty string
+
+- Numeric suppression codes: -9999, -6666, -1 (used by CTData.org)
+
+- Small count suppressions: \<5, \<10
 
 ## Usage
 
@@ -17,4 +22,4 @@ safe_numeric(x)
 
 ## Value
 
-Numeric vector with NA for non-numeric values
+Numeric vector with NA for suppressed/non-numeric values

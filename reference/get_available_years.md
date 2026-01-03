@@ -2,8 +2,8 @@
 
 Returns the range of school years for which enrollment data is
 available. Connecticut EdSight provides enrollment data from 2007
-(2006-07 school year) through the current year. The function dynamically
-detects available years by checking the EdSight API.
+(2006-07 school year) through 2024 (2023-24 school year). The function
+can optionally query the EdSight API to verify availability.
 
 ## Usage
 
@@ -27,5 +27,5 @@ Integer vector of available school years (end year)
 ``` r
 get_available_years()
 #>  [1] 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021
-#> [16] 2022 2023 2024 2025 2026
+#> [16] 2022 2023 2024
 ```
