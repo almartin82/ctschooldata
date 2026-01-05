@@ -9,7 +9,7 @@ template:
 
 home:
   links:
-  - text: "10 Insights from Connecticut Enrollment Data"
+  - text: "15 Insights from Connecticut Enrollment Data"
     href: articles/enrollment_hooks.html
   - text: "Part of the 50 State Schooldata Family"
     href: https://github.com/almartin82/njschooldata
@@ -25,6 +25,7 @@ reference:
   contents:
   - fetch_enr
   - fetch_enr_multi
+  - fetch_directory
   - get_available_years
   - import_local_enr
 
