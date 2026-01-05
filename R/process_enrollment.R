@@ -151,11 +151,12 @@ standardize_grade <- function(grade) {
 #' Process organization directory data
 #'
 #' Creates enrollment structure from organization directory.
-#' Note: This doesn't include actual enrollment counts.
+#' NOTE: This processes the Education Directory which contains binary grade-offering
+#' flags (0 = not offered, 1 = offered), NOT actual enrollment counts.
 #'
 #' @param df Organization directory data frame
 #' @param end_year School year end
-#' @return Data frame with organization structure
+#' @return Data frame with grade-offering flags in tidy format
 #' @keywords internal
 process_org_directory <- function(df, end_year) {
 
@@ -163,23 +164,69 @@ process_org_directory <- function(df, end_year) {
     return(create_empty_enrollment_df(end_year))
   }
 
+  # Standardize column names
+  names(df) <- tolower(names(df))
+  names(df) <- gsub(" ", "_", names(df))
+
+  # Rename key columns
+  if ("name" %in% names(df)) {
+    df <- dplyr::rename(df, school_name = name)
+  }
+  if ("organization_code" %in% names(df)) {
+    df <- dplyr::rename(df, org_code = organization_code)
+  }
+  if ("organization_type" %in% names(df)) {
+    df <- dplyr::rename(df, org_type = organization_type)
+  }
+
+  # Identify grade columns
+  grade_mapping <- c(
+    "prekindergarten" = "PK",
+    "kindergarten" = "K",
+    "grade_1" = "01",
+    "grade_2" = "02",
+    "grade_3" = "03",
+    "grade_4" = "04",
+    "grade_5" = "05",
+    "grade_6" = "06",
+    "grade_7" = "07",
+    "grade_8" = "08",
+    "grade_9" = "09",
+    "grade_10" = "10",
+    "grade_11" = "11",
+    "grade_12" = "12"
+  )
+
+  grade_cols <- names(grade_mapping)
+  available_grades <- grade_cols[grade_cols %in% names(df)]
+
+  # Create a lookup table for district codes by district name
+  district_lookup <- df |>
+    dplyr::filter(grepl("district", tolower(org_type), fixed = TRUE)) |>
+    dplyr::distinct(district_name, district_code = org_code) |>
+    dplyr::filter(!is.na(district_name))
+
   # Standardize and process
   result <- df |>
     dplyr::mutate(
       end_year = end_year,
+      # PRD requires only "State", "District", or "Campus" - no "Other"
       type = dplyr::case_when(
+        grepl("districts", tolower(org_type), fixed = TRUE) ~ "District",
+        grepl("schools", tolower(org_type), fixed = TRUE) ~ "Campus",
+        # Fallback: if org_type contains district, classify as District
         grepl("district", tolower(org_type), fixed = TRUE) ~ "District",
-        grepl("school", tolower(org_type), fixed = TRUE) ~ "Campus",
-        TRUE ~ "Other"
+        # Otherwise classify as Campus
+        TRUE ~ "Campus"
       ),
-      district_id = dplyr::if_else(
+      district_id_temp = dplyr::if_else(
         type == "District",
-        org_code,
+        as.character(org_code),
         NA_character_
       ),
       campus_id = dplyr::if_else(
         type == "Campus",
-        org_code,
+        as.character(org_code),
         NA_character_
       ),
       district_name = district_name,
@@ -188,16 +235,64 @@ process_org_directory <- function(df, end_year) {
         school_name,
         NA_character_
       )
+    ) |>
+    # Join in district_id for campus records
+    dplyr::left_join(district_lookup, by = "district_name") |>
+    dplyr::mutate(
+      district_id = dplyr::coalesce(district_id_temp, district_code)
+    ) |>
+    dplyr::select(-district_id_temp, -district_code)
+
+  # Convert grade columns to numeric and pivot to long format
+  if (length(available_grades) > 0) {
+    # Convert grade columns to numeric
+    for (col in available_grades) {
+      result[[col]] <- as.numeric(result[[col]])
+    }
+
+    # Pivot grades to long format
+    tidy_grades <- result |>
+      tidyr::pivot_longer(
+        cols = dplyr::all_of(available_grades),
+        names_to = "raw_grade",
+        values_to = "grade_offered"
+      ) |>
+      dplyr::mutate(
+        grade_level = grade_mapping[raw_grade],
+        n_students = grade_offered,  # Binary flag stored as n_students
+        subgroup = "grade_offered"    # Indicate this is a binary flag, not enrollment
+      ) |>
+      dplyr::filter(!is.na(grade_level))
+
+    # Add PRD-required invariant columns
+    invariant_cols <- c(
+      "end_year", "type",
+      "district_id", "campus_id",
+      "district_name", "campus_name"
     )
 
-  # Select and order columns
-  result |>
-    dplyr::select(
-      end_year, type,
-      district_id, campus_id,
-      district_name, campus_name,
-      dplyr::everything()
-    )
+    result <- tidy_grades |>
+      dplyr::select(
+        dplyr::all_of(invariant_cols),
+        "grade_level", "subgroup", "n_students",
+        dplyr::any_of(c("org_type"))  # Include any extra columns, will be removed later
+      ) |>
+      dplyr::mutate(
+        pct = NA_real_  # No percentages for binary flags
+      ) |>
+      dplyr::select(-dplyr::any_of(c("org_type", "org_code", "school_name")))  # Remove non-PRD columns
+  } else {
+    # No grade columns available
+    result <- result |>
+      dplyr::mutate(
+        grade_level = NA_character_,
+        n_students = NA_real_,
+        subgroup = "grade_offered"
+      ) |>
+      dplyr::select(-dplyr::any_of(c("org_type", "org_code", "school_name")))  # Remove non-PRD columns
+  }
+
+  result
 }
 
 
