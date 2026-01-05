@@ -13,7 +13,7 @@ Fetch and analyze Connecticut school enrollment data from the Connecticut State 
 
 ## What can you find with ctschooldata?
 
-**19 years of enrollment data (2007-2025).** 530,000 students across 170+ districts in the Constitution State. Here are ten stories hiding in the numbers:
+**18 years of enrollment data (2007-2024).** 530,000 students across 170+ districts in the Constitution State. Here are fifteen stories hiding in the numbers:
 
 ---
 
@@ -25,7 +25,7 @@ Connecticut public school enrollment peaked around 580,000 in 2006 and has been 
 library(ctschooldata)
 library(dplyr)
 
-enr <- fetch_enr_multi(2007:2025)
+enr <- fetch_enr_multi(2007:2024)
 
 enr %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
@@ -40,9 +40,9 @@ enr %>%
 Connecticut's three largest cities serve over 60,000 students combined, with demographics and challenges quite different from wealthy suburbs.
 
 ```r
-enr_2025 <- fetch_enr(2025)
+enr_2024 <- fetch_enr(2024)
 
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
          grepl("Hartford|Bridgeport|New Haven", district_name)) %>%
   arrange(desc(n_students)) %>%
@@ -72,7 +72,7 @@ enr %>%
 Hispanic students are now the second-largest group statewide and are on track to become the plurality within a decade as white enrollment declines.
 
 ```r
-enr <- fetch_enr_multi(2007:2025)
+enr <- fetch_enr_multi(2007:2024)
 
 enr %>%
   filter(is_state, grade_level == "TOTAL",
@@ -88,7 +88,7 @@ enr %>%
 Fairfield County districts like Greenwich, Darien, and New Canaan have demographics that look nothing like Hartford or Bridgeport, just miles away.
 
 ```r
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
          grepl("Greenwich|Darien|New Canaan|Westport", district_name),
          subgroup %in% c("white", "hispanic", "black", "asian")) %>%
@@ -104,7 +104,7 @@ enr_2025 %>%
 Connecticut's extensive interdistrict magnet school program is one of the largest in the nation, designed to promote integration across district lines.
 
 ```r
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
          grepl("Regional|CREC|Magnet|Interdistrict", district_name, ignore.case = TRUE)) %>%
   arrange(desc(n_students)) %>%
@@ -119,7 +119,7 @@ enr_2025 %>%
 Connecticut's smallest districts (under 1,000 students) face existential questions about whether they can sustain comprehensive K-12 programs.
 
 ```r
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   filter(n_students < 1000) %>%
   arrange(n_students) %>%
@@ -134,7 +134,7 @@ enr_2025 %>%
 Connecticut's English learner population has grown significantly, concentrated in urban districts and some suburbs with recent immigration.
 
 ```r
-enr_2025 %>%
+enr_2024 %>%
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("lep", "total_enrollment")) %>%
   select(subgroup, n_students, pct)
@@ -147,7 +147,7 @@ enr_2025 %>%
 Stamford Public Schools has a remarkably even distribution across racial groups, making it one of the most diverse districts in New England.
 
 ```r
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
          grepl("Stamford", district_name),
          subgroup %in% c("hispanic", "white", "black", "asian", "multiracial")) %>%
@@ -164,13 +164,92 @@ Connecticut has one of the nation's largest achievement gaps, mapping closely to
 
 ```r
 # Compare demographics between district types
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
          grepl("Hartford|Greenwich|Bridgeport|Darien", district_name),
          subgroup %in% c("total_enrollment", "hispanic", "white", "econ_disadv")) %>%
   select(district_name, subgroup, n_students, pct) %>%
   tidyr::pivot_wider(names_from = subgroup, values_from = c(n_students, pct))
 ```
+
+---
+
+### 11. New Haven loses students while suburbs grow
+
+New Haven has seen steady enrollment decline while surrounding towns like Guilford and Madison maintain stable numbers, illustrating Connecticut's urban-suburban divergence.
+
+```r
+enr <- fetch_enr_multi(2007:2024)
+
+enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("New Haven|Guilford|Madison|Hamden|West Haven", district_name)) %>%
+  select(end_year, district_name, n_students) %>%
+  tidyr::pivot_wider(names_from = district_name, values_from = n_students)
+```
+
+![New Haven area trends](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/new-haven-chart-1.png)
+
+---
+
+### 12. Kindergarten enrollment never recovered from COVID
+
+Connecticut's kindergarten enrollment dropped sharply in 2021 and has not bounced back, signaling a potential long-term enrollment cliff.
+
+```r
+enr %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "K") %>%
+  select(end_year, n_students) %>%
+  arrange(end_year)
+```
+
+![Kindergarten enrollment trend](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/kindergarten-chart-1.png)
+
+---
+
+### 13. Waterbury is Connecticut's fourth-largest district
+
+Waterbury often gets overlooked behind the big three, but it serves nearly 18,000 students and faces many of the same challenges as Hartford, Bridgeport, and New Haven.
+
+```r
+enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Hartford|Bridgeport|New Haven|Waterbury", district_name)) %>%
+  arrange(desc(n_students)) %>%
+  select(district_name, n_students)
+```
+
+![Big Four urban districts](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/waterbury-chart-1.png)
+
+---
+
+### 14. CREC magnets serve more students than most districts
+
+Capitol Region Education Council (CREC) magnets in the Hartford area serve over 10,000 students, making it one of the largest education organizations in the state.
+
+```r
+enr %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Capitol Region|CREC", district_name, ignore.case = TRUE)) %>%
+  select(end_year, district_name, n_students)
+```
+
+![CREC magnet enrollment](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/crec-chart-1.png)
+
+---
+
+### 15. Asian enrollment has doubled since 2007
+
+While white and Black enrollment has declined, Asian student enrollment has grown substantially, now representing over 5% of Connecticut students.
+
+```r
+enr %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "asian") %>%
+  select(end_year, n_students, pct) %>%
+  mutate(pct = round(pct * 100, 1))
+```
+
+![Asian student enrollment growth](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/asian-chart-1.png)
 
 ---
 
@@ -198,22 +277,22 @@ library(ctschooldata)
 library(dplyr)
 
 # Fetch one year
-enr_2025 <- fetch_enr(2025)
+enr_2024 <- fetch_enr(2024)
 
 # Fetch multiple years
-enr_multi <- fetch_enr_multi(2020:2025)
+enr_multi <- fetch_enr_multi(2020:2024)
 
 # State totals
-enr_2025 %>%
+enr_2024 %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL")
 
 # District breakdown
-enr_2025 %>%
+enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   arrange(desc(n_students))
 
 # Demographics
-enr_2025 %>%
+enr_2024 %>%
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("white", "hispanic", "black", "asian")) %>%
   select(subgroup, n_students, pct)
@@ -224,8 +303,8 @@ enr_2025 %>%
 ```python
 import pyctschooldata as ct
 
-# Fetch 2025 data (2024-25 school year)
-enr = ct.fetch_enr(2025)
+# Fetch 2024 data (2024-25 school year)
+enr = ct.fetch_enr(2024)
 
 # Statewide total
 total = enr[(enr['is_state']) & (enr['subgroup'] == 'total_enrollment') & (enr['grade_level'] == 'TOTAL')]['n_students'].sum()
@@ -233,19 +312,19 @@ print(f"{total:,} students")
 #> ~500,000 students
 
 # Get multiple years
-enr_multi = ct.fetch_enr_multi([2020, 2021, 2022, 2023, 2024, 2025])
+enr_multi = ct.fetch_enr_multi([2020, 2021, 2022, 2023, 2024, 2024])
 
 # Check available years
 years = ct.get_available_years()
 print(f"Data available: {years['min_year']}-{years['max_year']}")
-#> Data available: 2007-2025
+#> Data available: 2007-2024
 ```
 
 ## Data availability
 
 | Years | Source | Notes |
 |-------|--------|-------|
-| **2007-2025** | EdSight / CT Open Data | Full demographic and grade-level data |
+| **2007-2024** | EdSight / CT Open Data | Full demographic and grade-level data |
 
 Data is sourced from the Connecticut State Department of Education via EdSight and the CT Open Data portal.
 
