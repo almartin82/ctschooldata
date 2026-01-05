@@ -10,14 +10,18 @@
 <url><loc>https://almartin82.github.io/ctschooldata/authors.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/index.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/build_edsight_url.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/build_grade_span.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/cache_exists.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/cache_status.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/clear_cache.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/clear_directory_cache.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/create_empty_enrollment_df.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/ctschooldata-package.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/detect_available_years.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/directory_cache_exists.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/download_edsight_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/enr_grade_aggs.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/fetch_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/fetch_education_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/fetch_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/fetch_enr_multi.html</loc></url>
@@ -25,6 +29,8 @@
 <url><loc>https://almartin82.github.io/ctschooldata/reference/get_available_years.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/get_cache_dir.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/get_cache_path.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/get_directory_cache_path.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/get_raw_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/get_raw_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/id_enr_aggs.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/identify_grade_columns.html</loc></url>
@@ -32,10 +38,12 @@
 <url><loc>https://almartin82.github.io/ctschooldata/reference/index.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/parse_school_year.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/process_ctdata_enrollment.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/process_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/process_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/process_local_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/process_org_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/read_cache.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/read_directory_cache.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/safe_numeric.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/standardize_grade.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/standardize_org_code.html</loc></url>
@@ -45,5 +53,6 @@
 <url><loc>https://almartin82.github.io/ctschooldata/reference/try_ct_open_data.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/try_ctdata_org.html</loc></url>
 <url><loc>https://almartin82.github.io/ctschooldata/reference/write_cache.html</loc></url>
+<url><loc>https://almartin82.github.io/ctschooldata/reference/write_directory_cache.html</loc></url>
 </urlset>
 

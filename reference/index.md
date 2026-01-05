@@ -6,6 +6,8 @@
   : Fetch Connecticut enrollment data
 - [`fetch_enr_multi()`](https://almartin82.github.io/ctschooldata/reference/fetch_enr_multi.md)
   : Fetch enrollment data for multiple years
+- [`fetch_directory()`](https://almartin82.github.io/ctschooldata/reference/fetch_directory.md)
+  : Fetch Connecticut school directory data
 - [`get_available_years()`](https://almartin82.github.io/ctschooldata/reference/get_available_years.md)
   : Get available years for Connecticut enrollment data
 - [`import_local_enr()`](https://almartin82.github.io/ctschooldata/reference/import_local_enr.md)
@@ -26,3 +28,5 @@
   : Show cache status
 - [`clear_cache()`](https://almartin82.github.io/ctschooldata/reference/clear_cache.md)
   : Clear the ctschooldata cache
+- [`clear_directory_cache()`](https://almartin82.github.io/ctschooldata/reference/clear_directory_cache.md)
+  : Clear the directory cache
