@@ -188,8 +188,6 @@ enr %>%
   tidyr::pivot_wider(names_from = district_name, values_from = n_students)
 ```
 
-![New Haven area trends](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/new-haven-chart-1.png)
-
 ---
 
 ### 12. Kindergarten enrollment never recovered from COVID
@@ -202,8 +200,6 @@ enr %>%
   select(end_year, n_students) %>%
   arrange(end_year)
 ```
-
-![Kindergarten enrollment trend](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/kindergarten-chart-1.png)
 
 ---
 
@@ -219,8 +215,6 @@ enr_2024 %>%
   select(district_name, n_students)
 ```
 
-![Big Four urban districts](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/waterbury-chart-1.png)
-
 ---
 
 ### 14. CREC magnets serve more students than most districts
@@ -233,8 +227,6 @@ enr %>%
          grepl("Capitol Region|CREC", district_name, ignore.case = TRUE)) %>%
   select(end_year, district_name, n_students)
 ```
-
-![CREC magnet enrollment](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/crec-chart-1.png)
 
 ---
 
@@ -249,15 +241,7 @@ enr %>%
   mutate(pct = round(pct * 100, 1))
 ```
 
-![Asian student enrollment growth](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/asian-chart-1.png)
-
 ---
-
-## Enrollment Visualizations
-
-<img src="https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png" alt="Connecticut statewide enrollment trends" width="600">
-
-<img src="https://almartin82.github.io/ctschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png" alt="Top Connecticut districts" width="600">
 
 See the [full vignette](https://almartin82.github.io/ctschooldata/articles/enrollment_hooks.html) for more insights.
 
