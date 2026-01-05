@@ -52,9 +52,12 @@
 # Global variables to avoid R CMD check NOTEs
 # These are column names used in dplyr operations
 utils::globalVariables(c(
-  ".", "campus_id", "campus_name", "district", "district_id", "district_name",
-  "grade_level", "n_students", "name", "org_code", "org_type",
-  "organization_code", "organization_type", "row_total", "school_name",
-  "subgroup", "type", "value"
+  ".", "address", "campus_id", "campus_name", "district", "district_id",
+  "district_name", "grade_1", "grade_10", "grade_11", "grade_12", "grade_2",
+  "grade_3", "grade_4", "grade_5", "grade_6", "grade_7", "grade_8", "grade_9",
+  "grade_level", "grades_served", "kindergarten", "latitude", "longitude",
+  "n_students", "name", "org_code", "org_type", "organization_code",
+  "organization_type", "phone", "prekindergarten", "row_total", "school_name",
+  "state_district_id", "subgroup", "town", "type", "value", "zipcode"
 ))
 
