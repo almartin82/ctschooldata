@@ -71,10 +71,24 @@ fetch_enr <- function(end_year, tidy = TRUE, use_cache = TRUE) {
     return(processed)
   }
 
+  # Check if data is from Education Directory (binary flags vs actual enrollment)
+  if ("subgroup" %in% names(processed) && "grade_offered" %in% unique(processed$subgroup)) {
+    warning(
+      "IMPORTANT: Returning binary grade-offering flags (0 = not offered, 1 = offered), ",
+      "NOT actual enrollment counts. The automated data source only provides grade offerings.\n\n",
+      "To get real enrollment data:\n",
+      "1. Visit: https://public-edsight.ct.gov/Students/Enrollment-Dashboard/Public-School-Enrollment-Export\n",
+      "2. Export data for your desired years\n",
+      "3. Import with: import_local_enr('~/path/to/export.xlsx', end_year = 2024)\n\n",
+      "See package README and vignettes for details."
+    )
+  }
+
   # Optionally tidy
   if (tidy) {
-    processed <- tidy_enr(processed) |>
-      id_enr_aggs()
+    processed <- tidy_enr(processed)
+    # Add aggregation level flags (is_state, is_district, is_campus, is_charter)
+    processed <- id_enr_aggs(processed)
   }
 
   # Cache the result
@@ -178,8 +192,7 @@ import_local_enr <- function(file_path, end_year, tidy = TRUE, save_to_cache = T
 
   # Optionally tidy
   if (tidy) {
-    processed <- tidy_enr(processed) |>
-      id_enr_aggs()
+    processed <- tidy_enr(processed)
   }
 
   # Cache if requested
