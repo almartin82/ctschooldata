@@ -12,10 +12,11 @@ process_org_directory(df, end_year)
 \item{end_year}{School year end}
 }
 \value{
-Data frame with organization structure
+Data frame with grade-offering flags in tidy format
 }
 \description{
 Creates enrollment structure from organization directory.
-Note: This doesn't include actual enrollment counts.
+NOTE: This processes the Education Directory which contains binary grade-offering
+flags (0 = not offered, 1 = offered), NOT actual enrollment counts.
 }
 \keyword{internal}

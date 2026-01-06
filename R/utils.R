@@ -5,6 +5,32 @@
 #' @importFrom rlang .data
 NULL
 
+globalVariables(c(
+  "district_id_temp",
+  "district_code",
+  "raw_grade",
+  "grade_offered",
+  "prekindergarten",
+  "kindergarten",
+  "grade_1",
+  "grade_2",
+  "grade_3",
+  "grade_4",
+  "grade_5",
+  "grade_6",
+  "grade_7",
+  "grade_8",
+  "grade_9",
+  "grade_10",
+  "grade_11",
+  "grade_12",
+  "name",
+  "organization_code",
+  "organization_type",
+  "town",
+  "zipcode"
+))
+
 
 #' Convert to numeric, handling suppression markers
 #'
