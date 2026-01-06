@@ -68,21 +68,27 @@ tidy_pretidied_data <- function(df) {
   has_prd_ids <- "district_id" %in% names(df) && "campus_id" %in% names(df)
   has_state_ids <- "state_district_id" %in% names(df) && "state_school_id" %in% names(df)
 
-  df <- df |>
-    dplyr::mutate(
-      aggregation_flag = dplyr::case_when(
-        # Both district and campus IDs present
-        (has_prd_ids && !is.na(district_id) && district_id != "" &&
-         !is.na(campus_id) && campus_id != "") ~ "campus",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "" &&
-         !is.na(state_school_id) && state_school_id != "") ~ "campus",
-        # Only district ID present
-        (has_prd_ids && !is.na(district_id) && district_id != "") ~ "district",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "") ~ "district",
-        # Neither present - state level
-        TRUE ~ "state"
+  if (has_prd_ids) {
+    df <- df |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(district_id) & !is.na(campus_id) & district_id != "" & campus_id != "" ~ "campus",
+          !is.na(district_id) & district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
       )
-    )
+  } else if (has_state_ids) {
+    df <- df |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(state_district_id) & !is.na(state_school_id) & state_district_id != "" & state_school_id != "" ~ "campus",
+          !is.na(state_district_id) & state_district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
+      )
+  } else {
+    df$aggregation_flag <- "state"
+  }
 
   # Select only PRD-required columns plus aggregation_flag
   df |>
@@ -235,18 +241,29 @@ tidy_wide_data <- function(df) {
   has_prd_ids <- "district_id" %in% names(result) && "campus_id" %in% names(result)
   has_state_ids <- "state_district_id" %in% names(result) && "state_school_id" %in% names(result)
 
-  result |>
-    dplyr::mutate(
-      aggregation_flag = dplyr::case_when(
-        (has_prd_ids && !is.na(district_id) && district_id != "" &&
-         !is.na(campus_id) && campus_id != "") ~ "campus",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "" &&
-         !is.na(state_school_id) && state_school_id != "") ~ "campus",
-        (has_prd_ids && !is.na(district_id) && district_id != "") ~ "district",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "") ~ "district",
-        TRUE ~ "state"
+  if (has_prd_ids) {
+    result <- result |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(district_id) & !is.na(campus_id) & district_id != "" & campus_id != "" ~ "campus",
+          !is.na(district_id) & district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
       )
-    )
+  } else if (has_state_ids) {
+    result <- result |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(state_district_id) & !is.na(state_school_id) & state_district_id != "" & state_school_id != "" ~ "campus",
+          !is.na(state_district_id) & state_district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
+      )
+  } else {
+    result$aggregation_flag <- "state"
+  }
+
+  result
 }
 
 
@@ -275,7 +292,7 @@ id_enr_aggs <- function(df) {
     df$org_type <- NA_character_
   }
 
-  # Calculate is_* flags and aggregation_flag
+  # Calculate is_* flags
   result <- df |>
     dplyr::mutate(
       # State level: Type == "State"
@@ -300,18 +317,27 @@ id_enr_aggs <- function(df) {
   has_prd_ids <- "district_id" %in% names(df) && "campus_id" %in% names(df)
   has_state_ids <- "state_district_id" %in% names(df) && "state_school_id" %in% names(df)
 
-  result <- result |>
-    dplyr::mutate(
-      aggregation_flag = dplyr::case_when(
-        (has_prd_ids && !is.na(district_id) && district_id != "" &&
-         !is.na(campus_id) && campus_id != "") ~ "campus",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "" &&
-         !is.na(state_school_id) && state_school_id != "") ~ "campus",
-        (has_prd_ids && !is.na(district_id) && district_id != "") ~ "district",
-        (has_state_ids && !is.na(state_district_id) && state_district_id != "") ~ "district",
-        TRUE ~ "state"
+  if (has_prd_ids) {
+    result <- result |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(district_id) & !is.na(campus_id) & district_id != "" & campus_id != "" ~ "campus",
+          !is.na(district_id) & district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
       )
-    )
+  } else if (has_state_ids) {
+    result <- result |>
+      dplyr::mutate(
+        aggregation_flag = dplyr::case_when(
+          !is.na(state_district_id) & !is.na(state_school_id) & state_district_id != "" & state_school_id != "" ~ "campus",
+          !is.na(state_district_id) & state_district_id != "" ~ "district",
+          TRUE ~ "state"
+        )
+      )
+  } else {
+    result$aggregation_flag <- "state"
+  }
 
   # Remove org_type if it wasn't in the original data (PRD doesn't require it)
   if (!has_org_type) {
