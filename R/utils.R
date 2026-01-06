@@ -28,7 +28,12 @@ globalVariables(c(
   "organization_code",
   "organization_type",
   "town",
-  "zipcode"
+  "zipcode",
+  "district_id",
+  "campus_id",
+  "state_district_id",
+  "state_school_id",
+  "aggregation_flag"
 ))
 
 
