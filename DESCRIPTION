@@ -2,7 +2,9 @@ Package: ctschooldata
 Title: Connecticut School Data
 Version: 0.1.0
 Authors@R:
-    person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
+    person("Al", "Martin", email = "almartin@example.com", role = c("aut", "cre"))
+Author: Al Martin <almartin@example.com>
+Maintainer: Al Martin <almartin@example.com>
 Description: A simple, consistent interface for accessing Connecticut
     school data in Python and R.
 License: MIT + file LICENSE
