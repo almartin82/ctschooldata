@@ -17,6 +17,7 @@ Imports:
     dplyr,
     httr,
     jsonlite,
+    magrittr,
     purrr,
     rappdirs,
     readr,
