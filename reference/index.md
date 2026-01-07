@@ -29,4 +29,4 @@
 - [`clear_cache()`](https://almartin82.github.io/ctschooldata/reference/clear_cache.md)
   : Clear the ctschooldata cache
 - [`clear_directory_cache()`](https://almartin82.github.io/ctschooldata/reference/clear_directory_cache.md)
-  : Clear the directory cache
+  : Clear school directory cache

@@ -1,9 +1,8 @@
 # Fetch Connecticut school directory data
 
 Downloads and processes school directory data from the Connecticut Open
-Data Portal (data.ct.gov). The Education Directory contains information
-about public schools, districts, and endowed academies including names,
-addresses, phone numbers, grade levels served, and organization codes.
+Data Portal (data.ct.gov). This includes all public educational
+organizations in Connecticut with address and contact information.
 
 ## Usage
 
@@ -15,119 +14,79 @@ fetch_directory(tidy = TRUE, use_cache = TRUE)
 
 - tidy:
 
-  If TRUE (default), returns data with standardized column names. If
-  FALSE, returns raw API response format.
+  If TRUE (default), returns data in a standardized format with
+  consistent column names. If FALSE, returns raw column names from the
+  API.
 
 - use_cache:
 
   If TRUE (default), uses locally cached data when available. Set to
-  FALSE to force re-download from API.
+  FALSE to force re-download.
 
 ## Value
 
-Data frame with directory information. If tidy=TRUE, includes columns:
+A tibble with school directory data. Columns include:
 
-- end_year:
+- `state_school_id`: State organization code (7 characters)
 
-  Always NA (directory data is current, not year-specific)
+- `state_district_id`: District code derived from organization code
 
-- state_school_id:
+- `school_name`: Organization/school name
 
-  7-digit CT organization code
+- `district_name`: District name
 
-- state_district_id:
+- `school_type`: Type of organization (e.g., "Elementary School")
 
-  3-digit CT district code
+- `grades_served`: Comma-separated list of grades offered
 
-- nces_school_id:
+- `address`: Street address
 
-  Always NA (not in source)
+- `city`: Town/city name
 
-- nces_district_id:
+- `state`: State (always "CT")
 
-  Always NA (not in source)
+- `zip`: ZIP code
 
-- school_name:
+- `phone`: Phone number
 
-  School or organization name
+- `latitude`: Geographic latitude
 
-- district_name:
+- `longitude`: Geographic longitude
 
-  District name
+- `interdistrict_magnet`: Whether this is an interdistrict magnet
 
-- school_type:
+- `student_open_date`: Date the organization opened
 
-  Organization type (e.g., "Public Schools", "Public School Districts")
+## Details
 
-- grades_served:
+The directory data is downloaded via the Socrata API from the CT Open
+Data Portal. This data represents the official listing of all public
+educational organizations in Connecticut as maintained by CSDE.
 
-  Grade span (e.g., "K-5", "9-12")
-
-- address:
-
-  Street address
-
-- city:
-
-  City/town
-
-- state:
-
-  Always "CT"
-
-- zip:
-
-  ZIP code
-
-- phone:
-
-  Phone number
-
-- latitude:
-
-  Geographic latitude (if available)
-
-- longitude:
-
-  Geographic longitude (if available)
-
-- principal_name:
-
-  Always NA (not in source)
-
-- principal_email:
-
-  Always NA (not in source)
-
-- superintendent_name:
-
-  Always NA (not in source)
-
-- superintendent_email:
-
-  Always NA (not in source)
-
-## Note
-
-The CT Open Data Education Directory does not include administrator
-contact information (names, emails). These fields are included in the
-output for schema compatibility but are set to NA.
+Note: This data source does not include principal/superintendent names
+or email addresses. For contact information, visit EdSight Find Contacts
+at https://public-edsight.ct.gov/overview/find-contacts
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Get current directory data
-directory <- fetch_directory()
+# Get school directory data
+dir_data <- fetch_directory()
 
-# Get raw format
-directory_raw <- fetch_directory(tidy = FALSE)
+# Get raw format (original API column names)
+dir_raw <- fetch_directory(tidy = FALSE)
 
-# Force fresh download
-directory_fresh <- fetch_directory(use_cache = FALSE)
+# Force fresh download (ignore cache)
+dir_fresh <- fetch_directory(use_cache = FALSE)
 
-# Find all high schools
-high_schools <- directory |>
-  dplyr::filter(grepl("High School", school_name))
+# Filter to elementary schools only
+library(dplyr)
+elementary <- dir_data |>
+  filter(grepl("Elementary", school_type))
+
+# Find all schools in Hartford
+hartford_schools <- dir_data |>
+  filter(grepl("Hartford", district_name))
 } # }
 ```

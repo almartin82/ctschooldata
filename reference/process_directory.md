@@ -1,20 +1,20 @@
-# Process directory data to standard schema
+# Process raw school directory data to standard schema
 
-Transforms raw API response into standardized format with consistent
-column names and data types.
+Takes raw school directory data from CT Open Data and standardizes
+column names, types, and adds derived columns.
 
 ## Usage
 
 ``` r
-process_directory(raw_df)
+process_directory(raw_data)
 ```
 
 ## Arguments
 
-- raw_df:
+- raw_data:
 
   Raw data frame from get_raw_directory()
 
 ## Value
 
-Processed tibble with standardized schema
+Processed data frame with standard schema

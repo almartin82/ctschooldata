@@ -1,6 +1,6 @@
-# Clear the directory cache
+# Clear school directory cache
 
-Removes the cached directory data file.
+Removes cached school directory data files.
 
 ## Usage
 
@@ -10,13 +10,13 @@ clear_directory_cache()
 
 ## Value
 
-Invisibly returns TRUE if cache was deleted, FALSE if it didn't exist
+Invisibly returns the number of files removed
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Clear directory cache
+# Clear cached directory data
 clear_directory_cache()
 } # }
 ```
