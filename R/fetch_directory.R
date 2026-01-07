@@ -1,280 +1,330 @@
 # ==============================================================================
-# Directory Data Fetching Functions
+# School Directory Data Fetching Functions
 # ==============================================================================
 #
 # This file contains functions for downloading school directory data from the
-# Connecticut Open Data Portal (data.ct.gov) Socrata API.
+# Connecticut State Department of Education (CSDE) via CT Open Data Portal.
 #
-# Dataset: Education Directory
-# Dataset ID: 9k2y-kqxn
-# Source URL: https://data.ct.gov/Education/Education-Directory/9k2y-kqxn
+# Data source: https://data.ct.gov/resource/9k2y-kqxn
 #
 # ==============================================================================
 
 #' Fetch Connecticut school directory data
 #'
 #' Downloads and processes school directory data from the Connecticut Open Data
-#' Portal (data.ct.gov). The Education Directory contains information about
-#' public schools, districts, and endowed academies including names, addresses,
-#' phone numbers, grade levels served, and organization codes.
+#' Portal (data.ct.gov). This includes all public educational organizations
+#' in Connecticut with address and contact information.
 #'
-#' @param tidy If TRUE (default), returns data with standardized column names.
-#'   If FALSE, returns raw API response format.
+#' @param tidy If TRUE (default), returns data in a standardized format with
+#'   consistent column names. If FALSE, returns raw column names from the API.
 #' @param use_cache If TRUE (default), uses locally cached data when available.
-#'   Set to FALSE to force re-download from API.
-#' @return Data frame with directory information. If tidy=TRUE, includes columns:
-#'   \describe{
-#'     \item{end_year}{Always NA (directory data is current, not year-specific)}
-#'     \item{state_school_id}{7-digit CT organization code}
-#'     \item{state_district_id}{3-digit CT district code}
-#'     \item{nces_school_id}{Always NA (not in source)}
-#'     \item{nces_district_id}{Always NA (not in source)}
-#'     \item{school_name}{School or organization name}
-#'     \item{district_name}{District name}
-#'     \item{school_type}{Organization type (e.g., "Public Schools", "Public School Districts")}
-#'     \item{grades_served}{Grade span (e.g., "K-5", "9-12")}
-#'     \item{address}{Street address}
-#'     \item{city}{City/town}
-#'     \item{state}{Always "CT"}
-#'     \item{zip}{ZIP code}
-#'     \item{phone}{Phone number}
-#'     \item{latitude}{Geographic latitude (if available)}
-#'     \item{longitude}{Geographic longitude (if available)}
-#'     \item{principal_name}{Always NA (not in source)}
-#'     \item{principal_email}{Always NA (not in source)}
-#'     \item{superintendent_name}{Always NA (not in source)}
-#'     \item{superintendent_email}{Always NA (not in source)}
+#'   Set to FALSE to force re-download.
+#' @return A tibble with school directory data. Columns include:
+#'   \itemize{
+#'     \item \code{state_school_id}: State organization code (7 characters)
+#'     \item \code{state_district_id}: District code derived from organization code
+#'     \item \code{school_name}: Organization/school name
+#'     \item \code{district_name}: District name
+#'     \item \code{school_type}: Type of organization (e.g., "Elementary School")
+#'     \item \code{grades_served}: Comma-separated list of grades offered
+#'     \item \code{address}: Street address
+#'     \item \code{city}: Town/city name
+#'     \item \code{state}: State (always "CT")
+#'     \item \code{zip}: ZIP code
+#'     \item \code{phone}: Phone number
+#'     \item \code{latitude}: Geographic latitude
+#'     \item \code{longitude}: Geographic longitude
+#'     \item \code{interdistrict_magnet}: Whether this is an interdistrict magnet
+#'     \item \code{student_open_date}: Date the organization opened
 #'   }
-#' @note The CT Open Data Education Directory does not include administrator
-#'   contact information (names, emails). These fields are included in the
-#'   output for schema compatibility but are set to NA.
+#' @details
+#' The directory data is downloaded via the Socrata API from the CT Open Data
+#' Portal. This data represents the official listing of all public educational
+#' organizations in Connecticut as maintained by CSDE.
+#'
+#' Note: This data source does not include principal/superintendent names or
+#' email addresses. For contact information, visit EdSight Find Contacts at
+#' https://public-edsight.ct.gov/overview/find-contacts
+#'
 #' @export
 #' @examples
 #' \dontrun{
-#' # Get current directory data
-#' directory <- fetch_directory()
+#' # Get school directory data
+#' dir_data <- fetch_directory()
 #'
-#' # Get raw format
-#' directory_raw <- fetch_directory(tidy = FALSE)
+#' # Get raw format (original API column names)
+#' dir_raw <- fetch_directory(tidy = FALSE)
 #'
-#' # Force fresh download
-#' directory_fresh <- fetch_directory(use_cache = FALSE)
+#' # Force fresh download (ignore cache)
+#' dir_fresh <- fetch_directory(use_cache = FALSE)
 #'
-#' # Find all high schools
-#' high_schools <- directory |>
-#'   dplyr::filter(grepl("High School", school_name))
+#' # Filter to elementary schools only
+#' library(dplyr)
+#' elementary <- dir_data |>
+#'   filter(grepl("Elementary", school_type))
+#'
+#' # Find all schools in Hartford
+#' hartford_schools <- dir_data |>
+#'   filter(grepl("Hartford", district_name))
 #' }
 fetch_directory <- function(tidy = TRUE, use_cache = TRUE) {
 
-  # Check cache first
-  if (use_cache && directory_cache_exists()) {
-    message("Using cached directory data")
-    cached <- read_directory_cache()
+  # Determine cache type based on tidy parameter
+  cache_type <- if (tidy) "directory_tidy" else "directory_raw"
 
-    if (tidy) {
-      return(process_directory(cached))
-    } else {
-      return(cached)
-    }
+  # Check cache first
+  if (use_cache && cache_exists_directory(cache_type)) {
+    message("Using cached school directory data")
+    return(read_cache_directory(cache_type))
   }
 
-  # Get raw data from API
+  # Get raw data from CT Open Data
   raw <- get_raw_directory()
 
-  # Cache raw data
-  if (use_cache) {
-    write_directory_cache(raw)
-  }
-
-  # Process if requested
+  # Process to standard schema
   if (tidy) {
-    processed <- process_directory(raw)
+    result <- process_directory(raw)
   } else {
-    processed <- raw
+    result <- raw
   }
 
-  processed
+  # Cache the result
+  if (use_cache) {
+    write_cache_directory(result, cache_type)
+  }
+
+  result
 }
 
 
-#' Get raw directory data from CT Open Data API
+#' Get raw school directory data from CT Open Data
 #'
-#' Downloads the complete Education Directory dataset from data.ct.gov.
+#' Downloads the raw school directory data from the Connecticut Open Data Portal
+#' via the Socrata API.
 #'
-#' @return Raw data frame from API response
+#' @return Raw data frame as downloaded from CT Open Data
 #' @keywords internal
 get_raw_directory <- function() {
 
-  # CT Open Data Education Directory API endpoint
-  url <- "https://data.ct.gov/resource/9k2y-kqxn.json"
+  # Build API URL
+  url <- build_directory_url()
 
-  message("Downloading directory data from CT Open Data...")
+  message("Downloading school directory data from CT Open Data Portal...")
 
-  # Request all records (Socrata API limit is 50,000 by default)
+  # Use httr for API request
   response <- httr::GET(
     url,
-    query = list(
-      `$limit` = 50000  # Get all records
-    ),
-    httr::timeout(60)
+    httr::timeout(120),
+    httr::add_headers(
+      "Accept" = "application/json"
+    )
   )
 
-  # Check for errors
+  # Check for successful response
   if (httr::http_error(response)) {
-    status <- httr::status_code(response)
-    stop(paste("Failed to download directory data. HTTP", status))
+    stop(paste(
+      "Failed to download school directory data from CT Open Data Portal.",
+      "HTTP status:", httr::status_code(response)
+    ))
   }
 
-  # Parse JSON
+  # Parse JSON response
   content <- httr::content(response, as = "text", encoding = "UTF-8")
-  raw_df <- jsonlite::fromJSON(content, flatten = TRUE)
-
-  message(paste("Downloaded", nrow(raw_df), "records"))
-
-  raw_df
-}
-
-
-#' Process directory data to standard schema
-#'
-#' Transforms raw API response into standardized format with consistent
-#' column names and data types.
-#'
-#' @param raw_df Raw data frame from get_raw_directory()
-#' @return Processed tibble with standardized schema
-#' @keywords internal
-process_directory <- function(raw_df) {
-
-  # Ensure raw_df is a data frame
-  if (!is.data.frame(raw_df)) {
-    stop("raw_df must be a data frame")
-  }
-
-  # Extract latitude/longitude from geocoded_column if present
-  if ("geocoded_column.latitude" %in% names(raw_df)) {
-    raw_df$latitude <- as.numeric(raw_df$`geocoded_column.latitude`)
-  }
-  if ("geocoded_column.longitude" %in% names(raw_df)) {
-    raw_df$longitude <- as.numeric(raw_df$`geocoded_column.longitude`)
-  }
-
-  # Parse organization codes
-  # CT organization codes are 7 digits:
-  # - Districts: XXX0011 (where XXX is district code)
-  # - Schools: XXYYZ11 (where XXX is district code)
-  processed <- raw_df |>
-    dplyr::mutate(
-      # Keep organization_code as character to preserve leading zeros
-      organization_code = as.character(organization_code),
-
-      # Extract district code (first 3 digits)
-      state_district_id = substr(organization_code, 1, 3),
-
-      # Build grades_served from grade flags using row-wise application
-      grades_served = purrr::pmap_chr(
-        list(prekindergarten, kindergarten, grade_1, grade_2, grade_3,
-             grade_4, grade_5, grade_6, grade_7, grade_8, grade_9,
-             grade_10, grade_11, grade_12),
-        build_grade_span
-      )
-    ) |>
-    dplyr::select(
-      state_school_id = organization_code,
-      state_district_id,
-      school_name = name,
-      district_name,
-      school_type = organization_type,
-      grades_served,
-      address,
-      city = town,
-      zip = zipcode,
-      phone,
-      latitude,
-      longitude
-    )
-
-  # Add NA columns that are required by schema but not in source
-  processed$end_year <- NA_integer_
-  processed$nces_school_id <- NA_character_
-  processed$nces_district_id <- NA_character_
-  processed$state <- "CT"
-  processed$principal_name <- NA_character_
-  processed$principal_email <- NA_character_
-  processed$superintendent_name <- NA_character_
-  processed$superintendent_email <- NA_character_
+  df <- jsonlite::fromJSON(content, flatten = TRUE)
 
   # Convert to tibble
-  processed <- dplyr::tibble(processed)
+  df <- dplyr::as_tibble(df)
 
-  processed
+  message(paste("Downloaded", nrow(df), "records"))
+
+  df
 }
 
 
-#' Build grade span string from grade flags
+#' Build CT Open Data directory API URL
 #'
-#' Constructs a grade span representation (e.g., "K-5", "6-8", "9-12")
-#' from binary grade offering flags.
+#' Constructs the Socrata API URL for the Education Directory dataset.
 #'
-#' @param ... Grade flag columns (prekindergarten through grade_12)
-#' @return Character vector of grade spans
+#' @return URL string
 #' @keywords internal
-build_grade_span <- function(...) {
+build_directory_url <- function() {
+  # CT Open Data Education Directory
+  # Dataset ID: 9k2y-kqxn
+  # Using $limit=50000 to get all records (default is 1000)
+  "https://data.ct.gov/resource/9k2y-kqxn.json?$limit=50000"
+}
 
-  grade_flags <- list(...)
 
-  # Map column positions to grade labels
+#' Process raw school directory data to standard schema
+#'
+#' Takes raw school directory data from CT Open Data and standardizes column names,
+#' types, and adds derived columns.
+#'
+#' @param raw_data Raw data frame from get_raw_directory()
+#' @return Processed data frame with standard schema
+#' @keywords internal
+process_directory <- function(raw_data) {
+
+  cols <- names(raw_data)
+
+  # Build the standardized result data frame
+  n_rows <- nrow(raw_data)
+  result <- dplyr::tibble(.rows = n_rows)
+
+  # Organization Code (state_school_id)
+  if ("organization_code" %in% cols) {
+    # Ensure consistent character format with leading zeros
+    result$state_school_id <- sprintf("%07s", raw_data$organization_code)
+    result$state_school_id <- gsub(" ", "0", result$state_school_id)
+  }
+
+  # Derive district ID from organization code
+  # In CT, district codes are typically the first 3 digits
+  if ("state_school_id" %in% names(result)) {
+    result$state_district_id <- substr(result$state_school_id, 1, 3)
+  }
+
+  # School/Organization Name
+  if ("name" %in% cols) {
+    result$school_name <- trimws(raw_data$name)
+  }
+
+  # District Name
+  if ("district_name" %in% cols) {
+    result$district_name <- trimws(raw_data$district_name)
+  }
+
+  # Organization Type -> school_type
+  if ("organization_type" %in% cols) {
+    result$school_type <- trimws(raw_data$organization_type)
+  }
+
+  # Build grades_served from individual grade columns
+  grade_cols <- c(
+    "prekindergarten", "kindergarten",
+    paste0("grade_", 1:12)
+  )
   grade_labels <- c(
-    "PK", "K", "01", "02", "03", "04", "05", "06",
-    "07", "08", "09", "10", "11", "12"
+    "PK", "K",
+    sprintf("%02d", 1:12)
   )
 
-  # Convert flags to logical (treat "1", 1, TRUE as offered)
-  grade_offered <- sapply(grade_flags, function(flag) {
-    isTRUE(as.logical(as.numeric(flag)))
-  })
+  grades_served <- character(n_rows)
+  for (i in seq_len(n_rows)) {
+    offered <- character(0)
+    for (j in seq_along(grade_cols)) {
+      if (grade_cols[j] %in% cols) {
+        val <- raw_data[[grade_cols[j]]][i]
+        if (!is.na(val) && val == "1") {
+          offered <- c(offered, grade_labels[j])
+        }
+      }
+    }
+    grades_served[i] <- paste(offered, collapse = ",")
+  }
+  result$grades_served <- grades_served
 
-  # Build grade span
-  offered_grades <- grade_labels[grade_offered]
-
-  if (length(offered_grades) == 0) {
-    return(NA_character_)
+  # Address fields
+  if ("address" %in% cols) {
+    result$address <- trimws(raw_data$address)
   }
 
-  # Find continuous ranges
-  ranges <- list()
-  start_idx <- 1
-
-  for (i in seq_along(offered_grades)) {
-    if (i == length(offered_grades) ||
-        which(grade_labels == offered_grades[i + 1]) -
-        which(grade_labels == offered_grades[i]) != 1) {
-      # End of continuous range
-      ranges[[length(ranges) + 1]] <- offered_grades[start_idx:i]
-      start_idx <- i + 1
-    }
+  if ("town" %in% cols) {
+    result$city <- trimws(raw_data$town)
   }
 
-  # Format ranges
-  span_parts <- sapply(ranges, function(range) {
-    if (length(range) == 1) {
-      return(range)
-    } else {
-      return(paste(range[1], range[length(range)], sep = "-"))
-    }
-  })
+  result$state <- "CT"
 
-  paste(span_parts, collapse = ", ")
+  if ("zipcode" %in% cols) {
+    result$zip <- trimws(raw_data$zipcode)
+  }
+
+  # Phone
+  if ("phone" %in% cols) {
+    result$phone <- trimws(raw_data$phone)
+  }
+
+  # These fields are not available in the CT Open Data source
+  result$principal_name <- NA_character_
+  result$principal_email <- NA_character_
+  result$superintendent_name <- NA_character_
+  result$superintendent_email <- NA_character_
+
+  # Latitude and Longitude from geocoded_column
+  if ("geocoded_column.latitude" %in% cols) {
+    result$latitude <- as.numeric(raw_data[["geocoded_column.latitude"]])
+  } else if ("geocoded_column" %in% cols && is.list(raw_data$geocoded_column)) {
+    # Try to extract from nested structure
+    result$latitude <- sapply(raw_data$geocoded_column, function(x) {
+      if (is.null(x) || !is.list(x)) return(NA_real_)
+      if ("latitude" %in% names(x)) as.numeric(x$latitude) else NA_real_
+    })
+  }
+
+  if ("geocoded_column.longitude" %in% cols) {
+    result$longitude <- as.numeric(raw_data[["geocoded_column.longitude"]])
+  } else if ("geocoded_column" %in% cols && is.list(raw_data$geocoded_column)) {
+    result$longitude <- sapply(raw_data$geocoded_column, function(x) {
+      if (is.null(x) || !is.list(x)) return(NA_real_)
+      if ("longitude" %in% names(x)) as.numeric(x$longitude) else NA_real_
+    })
+  }
+
+  # Interdistrict magnet status
+  if ("interdistrict_magnet" %in% cols) {
+    result$interdistrict_magnet <- raw_data$interdistrict_magnet == "1"
+  }
+
+  # Student open date
+  if ("student_open_date" %in% cols) {
+    result$student_open_date <- raw_data$student_open_date
+  }
+
+  # Reorder columns for consistency with standard schema
+  preferred_order <- c(
+    "state_school_id", "state_district_id",
+    "school_name", "district_name", "school_type",
+    "grades_served",
+    "address", "city", "state", "zip", "phone",
+    "principal_name", "principal_email",
+    "superintendent_name", "superintendent_email",
+    "latitude", "longitude",
+    "interdistrict_magnet", "student_open_date"
+  )
+
+  existing_cols <- preferred_order[preferred_order %in% names(result)]
+  other_cols <- setdiff(names(result), preferred_order)
+
+  result <- result |>
+    dplyr::select(dplyr::all_of(c(existing_cols, other_cols)))
+
+  result
 }
 
 
-#' Check if directory cache exists and is valid
-#'
-#' @param max_age Maximum age in days (default 30)
-#' @return TRUE if valid cache exists
-#' @keywords internal
-directory_cache_exists <- function(max_age = 30) {
+# ==============================================================================
+# Directory-specific cache functions
+# ==============================================================================
 
-  cache_path <- get_directory_cache_path()
+#' Build cache file path for directory data
+#'
+#' @param cache_type Type of cache ("directory_tidy" or "directory_raw")
+#' @return File path string
+#' @keywords internal
+build_cache_path_directory <- function(cache_type) {
+  cache_dir <- get_cache_dir()
+  file.path(cache_dir, paste0(cache_type, ".rds"))
+}
+
+
+#' Check if cached directory data exists
+#'
+#' @param cache_type Type of cache ("directory_tidy" or "directory_raw")
+#' @param max_age Maximum age in days (default 30). Set to Inf to ignore age.
+#' @return Logical indicating if valid cache exists
+#' @keywords internal
+cache_exists_directory <- function(cache_type, max_age = 30) {
+  cache_path <- build_cache_path_directory(cache_type)
 
   if (!file.exists(cache_path)) {
     return(FALSE)
@@ -288,70 +338,63 @@ directory_cache_exists <- function(max_age = 30) {
 }
 
 
-#' Get directory cache file path
-#'
-#' @return Full path to directory cache file
-#' @keywords internal
-get_directory_cache_path <- function() {
-
-  cache_dir <- file.path(
-    rappdirs::user_cache_dir("ctschooldata"),
-    "data"
-  )
-
-  if (!dir.exists(cache_dir)) {
-    dir.create(cache_dir, recursive = TRUE)
-  }
-
-  file.path(cache_dir, "directory.rds")
-}
-
-
 #' Read directory data from cache
 #'
+#' @param cache_type Type of cache ("directory_tidy" or "directory_raw")
 #' @return Cached data frame
 #' @keywords internal
-read_directory_cache <- function() {
-
-  cache_path <- get_directory_cache_path()
+read_cache_directory <- function(cache_type) {
+  cache_path <- build_cache_path_directory(cache_type)
   readRDS(cache_path)
 }
 
 
 #' Write directory data to cache
 #'
-#' @param df Data frame to cache
+#' @param data Data frame to cache
+#' @param cache_type Type of cache ("directory_tidy" or "directory_raw")
 #' @return Invisibly returns the cache path
 #' @keywords internal
-write_directory_cache <- function(df) {
+write_cache_directory <- function(data, cache_type) {
+  cache_path <- build_cache_path_directory(cache_type)
+  cache_dir <- dirname(cache_path)
 
-  cache_path <- get_directory_cache_path()
-  saveRDS(df, cache_path)
+  if (!dir.exists(cache_dir)) {
+    dir.create(cache_dir, recursive = TRUE)
+  }
+
+  saveRDS(data, cache_path)
   invisible(cache_path)
 }
 
 
-#' Clear the directory cache
+#' Clear school directory cache
 #'
-#' Removes the cached directory data file.
+#' Removes cached school directory data files.
 #'
-#' @return Invisibly returns TRUE if cache was deleted, FALSE if it didn't exist
+#' @return Invisibly returns the number of files removed
 #' @export
 #' @examples
 #' \dontrun{
-#' # Clear directory cache
+#' # Clear cached directory data
 #' clear_directory_cache()
 #' }
 clear_directory_cache <- function() {
+  cache_dir <- get_cache_dir()
 
-  cache_path <- get_directory_cache_path()
-
-  if (file.exists(cache_path)) {
-    file.remove(cache_path)
-    message("Directory cache cleared")
-    invisible(TRUE)
-  } else {
-    message("No directory cache found")
-    invisible(FALSE)
+  if (!dir.exists(cache_dir)) {
+    message("Cache directory does not exist")
+    return(invisible(0))
   }
+
+  files <- list.files(cache_dir, pattern = "^directory_", full.names = TRUE)
+
+  if (length(files) > 0) {
+    file.remove(files)
+    message(paste("Removed", length(files), "cached directory file(s)"))
+  } else {
+    message("No cached directory files to remove")
+  }
+
+  invisible(length(files))
 }

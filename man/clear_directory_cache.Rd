@@ -2,19 +2,19 @@
 % Please edit documentation in R/fetch_directory.R
 \name{clear_directory_cache}
 \alias{clear_directory_cache}
-\title{Clear the directory cache}
+\title{Clear school directory cache}
 \usage{
 clear_directory_cache()
 }
 \value{
-Invisibly returns TRUE if cache was deleted, FALSE if it didn't exist
+Invisibly returns the number of files removed
 }
 \description{
-Removes the cached directory data file.
+Removes cached school directory data files.
 }
 \examples{
 \dontrun{
-# Clear directory cache
+# Clear cached directory data
 clear_directory_cache()
 }
 }

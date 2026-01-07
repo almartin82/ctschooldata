@@ -7,61 +7,64 @@
 fetch_directory(tidy = TRUE, use_cache = TRUE)
 }
 \arguments{
-\item{tidy}{If TRUE (default), returns data with standardized column names.
-If FALSE, returns raw API response format.}
+\item{tidy}{If TRUE (default), returns data in a standardized format with
+consistent column names. If FALSE, returns raw column names from the API.}
 
 \item{use_cache}{If TRUE (default), uses locally cached data when available.
-Set to FALSE to force re-download from API.}
+Set to FALSE to force re-download.}
 }
 \value{
-Data frame with directory information. If tidy=TRUE, includes columns:
-\describe{
-\item{end_year}{Always NA (directory data is current, not year-specific)}
-\item{state_school_id}{7-digit CT organization code}
-\item{state_district_id}{3-digit CT district code}
-\item{nces_school_id}{Always NA (not in source)}
-\item{nces_district_id}{Always NA (not in source)}
-\item{school_name}{School or organization name}
-\item{district_name}{District name}
-\item{school_type}{Organization type (e.g., "Public Schools", "Public School Districts")}
-\item{grades_served}{Grade span (e.g., "K-5", "9-12")}
-\item{address}{Street address}
-\item{city}{City/town}
-\item{state}{Always "CT"}
-\item{zip}{ZIP code}
-\item{phone}{Phone number}
-\item{latitude}{Geographic latitude (if available)}
-\item{longitude}{Geographic longitude (if available)}
-\item{principal_name}{Always NA (not in source)}
-\item{principal_email}{Always NA (not in source)}
-\item{superintendent_name}{Always NA (not in source)}
-\item{superintendent_email}{Always NA (not in source)}
+A tibble with school directory data. Columns include:
+\itemize{
+\item \code{state_school_id}: State organization code (7 characters)
+\item \code{state_district_id}: District code derived from organization code
+\item \code{school_name}: Organization/school name
+\item \code{district_name}: District name
+\item \code{school_type}: Type of organization (e.g., "Elementary School")
+\item \code{grades_served}: Comma-separated list of grades offered
+\item \code{address}: Street address
+\item \code{city}: Town/city name
+\item \code{state}: State (always "CT")
+\item \code{zip}: ZIP code
+\item \code{phone}: Phone number
+\item \code{latitude}: Geographic latitude
+\item \code{longitude}: Geographic longitude
+\item \code{interdistrict_magnet}: Whether this is an interdistrict magnet
+\item \code{student_open_date}: Date the organization opened
 }
 }
 \description{
 Downloads and processes school directory data from the Connecticut Open Data
-Portal (data.ct.gov). The Education Directory contains information about
-public schools, districts, and endowed academies including names, addresses,
-phone numbers, grade levels served, and organization codes.
+Portal (data.ct.gov). This includes all public educational organizations
+in Connecticut with address and contact information.
 }
-\note{
-The CT Open Data Education Directory does not include administrator
-contact information (names, emails). These fields are included in the
-output for schema compatibility but are set to NA.
+\details{
+The directory data is downloaded via the Socrata API from the CT Open Data
+Portal. This data represents the official listing of all public educational
+organizations in Connecticut as maintained by CSDE.
+
+Note: This data source does not include principal/superintendent names or
+email addresses. For contact information, visit EdSight Find Contacts at
+https://public-edsight.ct.gov/overview/find-contacts
 }
 \examples{
 \dontrun{
-# Get current directory data
-directory <- fetch_directory()
+# Get school directory data
+dir_data <- fetch_directory()
 
-# Get raw format
-directory_raw <- fetch_directory(tidy = FALSE)
+# Get raw format (original API column names)
+dir_raw <- fetch_directory(tidy = FALSE)
 
-# Force fresh download
-directory_fresh <- fetch_directory(use_cache = FALSE)
+# Force fresh download (ignore cache)
+dir_fresh <- fetch_directory(use_cache = FALSE)
 
-# Find all high schools
-high_schools <- directory |>
-  dplyr::filter(grepl("High School", school_name))
+# Filter to elementary schools only
+library(dplyr)
+elementary <- dir_data |>
+  filter(grepl("Elementary", school_type))
+
+# Find all schools in Hartford
+hartford_schools <- dir_data |>
+  filter(grepl("Hartford", district_name))
 }
 }

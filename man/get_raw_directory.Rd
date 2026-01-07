@@ -2,14 +2,15 @@
 % Please edit documentation in R/fetch_directory.R
 \name{get_raw_directory}
 \alias{get_raw_directory}
-\title{Get raw directory data from CT Open Data API}
+\title{Get raw school directory data from CT Open Data}
 \usage{
 get_raw_directory()
 }
 \value{
-Raw data frame from API response
+Raw data frame as downloaded from CT Open Data
 }
 \description{
-Downloads the complete Education Directory dataset from data.ct.gov.
+Downloads the raw school directory data from the Connecticut Open Data Portal
+via the Socrata API.
 }
 \keyword{internal}

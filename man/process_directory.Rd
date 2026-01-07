@@ -2,18 +2,18 @@
 % Please edit documentation in R/fetch_directory.R
 \name{process_directory}
 \alias{process_directory}
-\title{Process directory data to standard schema}
+\title{Process raw school directory data to standard schema}
 \usage{
-process_directory(raw_df)
+process_directory(raw_data)
 }
 \arguments{
-\item{raw_df}{Raw data frame from get_raw_directory()}
+\item{raw_data}{Raw data frame from get_raw_directory()}
 }
 \value{
-Processed tibble with standardized schema
+Processed data frame with standard schema
 }
 \description{
-Transforms raw API response into standardized format with consistent
-column names and data types.
+Takes raw school directory data from CT Open Data and standardizes column names,
+types, and adds derived columns.
 }
 \keyword{internal}
