@@ -43,15 +43,6 @@ tidy_enr <- function(df) {
 #' @keywords internal
 tidy_pretidied_data <- function(df) {
 
-  # PRD-required columns only
-  prd_cols <- c(
-    "end_year", "type",
-    "district_id", "campus_id",
-    "district_name", "campus_name",
-    "grade_level", "subgroup", "n_students", "pct"
-  )
-  prd_cols <- prd_cols[prd_cols %in% names(df)]
-
   # Add subgroup column if missing (default to total_enrollment)
   if (!"subgroup" %in% names(df)) {
     df$subgroup <- "total_enrollment"
@@ -61,6 +52,15 @@ tidy_pretidied_data <- function(df) {
   if (!"pct" %in% names(df)) {
     df$pct <- NA_real_
   }
+
+  # PRD-required columns only (calculated AFTER adding subgroup/pct)
+  prd_cols <- c(
+    "end_year", "type",
+    "district_id", "campus_id",
+    "district_name", "campus_name",
+    "grade_level", "subgroup", "n_students", "pct"
+  )
+  prd_cols <- prd_cols[prd_cols %in% names(df)]
 
   # Add aggregation_flag column
   # Handle different column naming conventions (PRD uses district_id/campus_id,

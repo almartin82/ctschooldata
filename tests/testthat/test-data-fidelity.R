@@ -384,10 +384,13 @@ test_that("grade levels are standardized correctly", {
 # Subgroup Coverage Tests
 # ==============================================================================
 
-test_that("at least total_enrollment subgroup is present", {
+test_that("at least total_enrollment or grade_offered subgroup is present", {
   skip_on_cran()
   skip_if_offline()
 
+  # Note: Different years use different data sources with different schemas:
+  # - 2010, 2015: CTData.org → subgroup = "total_enrollment"
+  # - 2020, 2024: Education Directory → subgroup = "grade_offered"
   test_years <- c(2010, 2015, 2020, 2024)
 
   for (yr in test_years) {
@@ -399,8 +402,8 @@ test_that("at least total_enrollment subgroup is present", {
     if (!is.null(enr) && nrow(enr) > 0) {
       subgroups <- unique(enr$subgroup)
 
-      expect_true("total_enrollment" %in% subgroups,
-        info = paste("Year", yr, "should have 'total_enrollment' subgroup")
+      expect_true(any(c("total_enrollment", "grade_offered") %in% subgroups),
+        info = paste("Year", yr, "should have 'total_enrollment' or 'grade_offered' subgroup")
       )
     }
   }
