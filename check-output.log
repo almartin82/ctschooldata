@@ -11,7 +11,8 @@
 * package encoding: UTF-8
 * checking package namespace information ... OK
 * checking package dependencies ... OK
-* checking if this is a source package ... OK
+* checking if this is a source package ... NOTE
+Subdirectory ‘.’ seems to contain an installed version of the package.
 * checking if there is a namespace ... OK
 * checking for executable files ... OK
 * checking for hidden files and directories ... NOTE
@@ -20,9 +21,40 @@ Found the following hidden files and directories:
   ..Rcheck
   .git
   .github
+  ctschooldata.Rcheck/00_pkg_src/ctschooldata/.github
 These were most likely included in error. See section ‘Package
 structure’ in the ‘Writing R Extensions’ manual.
-* checking for portable file names ... OK
+* checking for portable file names ... NOTE
+Found the following non-portable file paths:
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/bootstrap-5.3.1/bootstrap.bundle.min.js
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/bootstrap-5.3.1/bootstrap.bundle.min.js.map
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/clipboard.js-2.0.11/clipboard.min.js
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/css/all.min.css
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/css/v4-shims.css
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/css/v4-shims.min.css
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-brands-400.ttf
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-brands-400.woff2
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-regular-400.ttf
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-regular-400.woff2
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-solid-900.ttf
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-solid-900.woff2
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-v4compatibility.ttf
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/font-awesome-6.5.2/webfonts/fa-v4compatibility.woff2
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/headroom-0.11.0/jQuery.headroom.min.js
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/deps/search-1.0.0/autocomplete.jquery.min.js
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/create_empty_enrollment_df.html
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/create_empty_enrollment_df.md
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/download_edsight_enrollment.html
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/download_edsight_enrollment.md
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/fetch_education_directory.html
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/process_ctdata_enrollment.html
+  ctschooldata/ctschooldata.Rcheck/00_pkg_src/ctschooldata/docs/reference/process_local_enrollment.html
+
+Tarballs are only required to store paths of up to 100 bytes and cannot
+store those of more than 256 bytes, with restrictions including to 100
+bytes for the final component.
+See section ‘Package structure’ in the ‘Writing R Extensions’ manual.
 * checking for sufficient/correct file permissions ... OK
 * checking whether package ‘ctschooldata’ can be installed ... OK
 * checking installed package size ... OK
@@ -33,8 +65,9 @@ Checking should be performed on sources prepared by ‘R CMD build’.
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... WARNING
-Found the following directory with the name of a check directory:
+Found the following directories with names of check directories:
   ./..Rcheck
+  ./ctschooldata.Rcheck
 Most likely, these were included erroneously.
 * checking code files for non-ASCII characters ... OK
 * checking R files for syntax errors ... OK
@@ -129,11 +162,165 @@ Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
 Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
 Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
 Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
+Warning in file.copy(pkgdir, vd2, recursive = TRUE) : over-long path
  OK
 * checking PDF version of manual ... OK
 * DONE
 
-Status: 3 WARNINGs, 2 NOTEs
+Status: 3 WARNINGs, 4 NOTEs
 See
   ‘/Users/almartin/Documents/state-schooldata/ctschooldata/..Rcheck/00check.log’
 for details.
