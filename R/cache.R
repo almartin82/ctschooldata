@@ -7,17 +7,26 @@
 #
 # ==============================================================================
 
+#' Cache version for schema changes
+#'
+#' Increment this value when the data schema changes to invalidate old caches.
+#' Current version: 2 (added aggregation_flag column)
+#' @keywords internal
+CACHE_VERSION <- 2
+
 #' Get cache directory path
 #'
 #' Returns the path to the cache directory, creating it if necessary.
 #' Uses rappdirs for cross-platform cache location.
+#' Includes cache version to invalidate old caches when schema changes.
 #'
 #' @return Path to cache directory
 #' @keywords internal
 get_cache_dir <- function() {
   cache_dir <- file.path(
     rappdirs::user_cache_dir("ctschooldata"),
-    "data"
+    "data",
+    paste0("v", CACHE_VERSION)
   )
 
   if (!dir.exists(cache_dir)) {
