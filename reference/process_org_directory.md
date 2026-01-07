@@ -1,7 +1,8 @@
 # Process organization directory data
 
-Creates enrollment structure from organization directory. Note: This
-doesn't include actual enrollment counts.
+Creates enrollment structure from organization directory. NOTE: This
+processes the Education Directory which contains binary grade-offering
+flags (0 = not offered, 1 = offered), NOT actual enrollment counts.
 
 ## Usage
 
@@ -21,4 +22,4 @@ process_org_directory(df, end_year)
 
 ## Value
 
-Data frame with organization structure
+Data frame with grade-offering flags in tidy format
