@@ -50,7 +50,7 @@ This vignette explores Connecticut's public school enrollment data, surfacing ke
 Connecticut public school enrollment peaked around 580,000 in 2006 and has been declining ever since. The state has lost more than 12% of its student population.
 
 ```{r statewide-trend}
-enr <- fetch_enr_multi(2007:2024)
+enr <- fetch_enr_multi(2007:2024, use_cache = TRUE)
 
 state_totals <- enr |>
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") |>
@@ -81,7 +81,7 @@ ggplot(state_totals, aes(x = end_year, y = n_students)) +
 Connecticut's three largest cities serve over 60,000 students combined, with demographics and challenges quite different from wealthy suburbs.
 
 ```{r top-districts}
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
 top_cities <- enr_2024 |>
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
